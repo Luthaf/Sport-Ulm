@@ -30,24 +30,25 @@ class Departement(models.Model):
         return unicode(self.name)
 
 class Clipper(models.Model):
-    username = models.CharField("Identifiant",
-                                max_length = 20)
-    fullname = models.CharField("Nom complet",
-                                max_length = 200)
+    pass
+#     username = models.CharField("Identifiant",
+#                                 max_length = 20)
+#     fullname = models.CharField("Nom complet",
+#                                 max_length = 200)
+#
+#     def __unicode__(self):
+#         return unicode(self.username)
+#
+#     class Meta:
+#         verbose_name = "Profil Clipper"
+#         verbose_name_plural = "Profils Clipper"
 
-    def __unicode__(self):
-        return unicode(self.username)
-    
-    class Meta:
-        verbose_name = "Profil Clipper"
-        verbose_name_plural = "Profils Clipper"
-        
-        
+
 class Profile(models.Model):
     user = models.OneToOneField(User)
-    clipper = models.ForeignKey(Clipper,
-                                blank=True,
-                                null=True)
+#    clipper = models.ForeignKey(Clipper,
+#                                blank=True,
+#                                null=True)
     phone = models.CharField("Téléphone",
                              max_length=20,
                              blank=True)
@@ -67,15 +68,15 @@ class Profile(models.Model):
                                  verbose_name="Date de naissance",
                                  blank=True,
                                  null=True)
-    
+
     def __unicode__(self):
         return unicode(self.user.username)
-    
+
     class Meta:
         verbose_name = "Profil ENS"
         verbose_name_plural = "Profils ENS"
-    
-    
+
+
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:

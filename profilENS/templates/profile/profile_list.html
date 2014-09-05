@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Liste des profils connus
+{% endblock %}
+
+{% block content %}
+    {% for profile in profile_list %}
+        <h2>{{ profile }}</h2>
+        <div>
+            {{ profile.phone }}
+        </div>
+    {% endfor %}
+{% endblock %}

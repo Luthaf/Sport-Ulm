@@ -22,17 +22,19 @@ class Sport(models.Model):
 
 
 class UserBDS(models.Model):
-    FFSU_licence = models.BooleanField("Licence FFSU")
+    FFSU_licence = models.BooleanField("Licence FFSU",
+                                        default=False)
     FFSU_number = models.CharField(max_length=50,
                                   blank=True,
                                   null=True)
-    certificate = models.BooleanField("Certificat de santé")
-    certificate_file = models.BooleanField("Certificat de santé")
-    
+    certificate = models.BooleanField("Certificat",
+                                        default=False)
+    certificate_file = models.BooleanField("Certificat")
+
     sports = models.ManyToManyField(Sport,
                                     blank=True,
                                     through='UsersInSport')
-    
+
     class Meta:
         verbose_name = "Sportif"
 
@@ -40,8 +42,9 @@ class UserBDS(models.Model):
 class UsersInSport(models.Model):
     user = models.ForeignKey(UserBDS)
     sport = models.ForeignKey(Sport)
-    payed = models.BooleanField("Payé")
-    
+    payed = models.BooleanField("Payé",
+                                default=False)
+
     class Meta:
         verbose_name = "Cotisation"
 
@@ -56,11 +59,12 @@ class Event(models.Model):
                                    through='UsersInEvent')
     class Meta:
         verbose_name = "Évènement"
-                                           
+
 class UsersInEvent(models.Model):
     user = models.ForeignKey(UserBDS)
     event = models.ForeignKey(Event)
-    payed = models.BooleanField("Payé")
-    
+    payed = models.BooleanField("Payé",
+                                default=False)
+
     class Meta:
         verbose_name = "Participant"
