@@ -51,6 +51,7 @@ forms.BaseForm.fieldsets = fieldsets
 class UserCreationForm(forms.ModelForm):
 
     class Meta:
+        fields = tuple() # To silent Django warning
         model = User
         fieldsets = (
                 (None, {
