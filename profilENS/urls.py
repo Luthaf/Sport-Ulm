@@ -2,13 +2,16 @@
 
 from django.conf.urls import patterns, url
 
-from profilENS.views import ProfileView, ProfileList
+from profilENS.views import UserView, UserList, NewUser
 
 urlpatterns = patterns('profilENS.views',
     url(r'^$',
-        ProfileList.as_view(),
-        name='profile_list'),
-    url(r'^(?P<username>[\w-]+)/$',
-        ProfileView.as_view(),
-        name='show_profile'),
+        UserList.as_view(),
+        name='user_list'),
+    url(r'^new/$',
+        NewUser.as_view(),
+        name='new_user'),
+    url(r'^show/(?P<username>[\w-]+)/$',
+        UserView.as_view(),
+        name='show_user'),
 )

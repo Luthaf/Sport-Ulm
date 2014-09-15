@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.db import models
-from django.contrib.auth.models import User
-from django.db.models.signals import post_save
-from django.dispatch.dispatcher import receiver
+from django.contrib.auth.models import AbstractUser
 
 OCCUPATION_CHOICES = (
     ('EXT', "Extérieur"),
@@ -29,26 +27,8 @@ class Departement(models.Model):
     def __unicode__(self):
         return unicode(self.name)
 
-class Clipper(models.Model):
-    pass
-#     username = models.CharField("Identifiant",
-#                                 max_length = 20)
-#     fullname = models.CharField("Nom complet",
-#                                 max_length = 200)
-#
-#     def __unicode__(self):
-#         return unicode(self.username)
-#
-#     class Meta:
-#         verbose_name = "Profil Clipper"
-#         verbose_name_plural = "Profils Clipper"
 
-
-class Profile(models.Model):
-    user = models.OneToOneField(User)
-#    clipper = models.ForeignKey(Clipper,
-#                                blank=True,
-#                                null=True)
+class User(AbstractUser):
     phone = models.CharField("Téléphone",
                              max_length=20,
                              blank=True)
@@ -69,15 +49,4 @@ class Profile(models.Model):
                                  blank=True,
                                  null=True)
 
-    def __unicode__(self):
-        return unicode(self.user.username)
-
-    class Meta:
-        verbose_name = "Profil ENS"
-        verbose_name_plural = "Profils ENS"
-
-
-@receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        Profile.objects.get_or_create(user=instance)
+    #TODO: Add a password change view

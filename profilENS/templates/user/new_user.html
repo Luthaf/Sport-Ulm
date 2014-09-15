@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Ajouter un profil
+{% endblock %}
+
+{% block content %}
+    <form  method="post" action="{% url 'new_profile' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Créer un profil"/>
+    </form>
+{% endblock %}

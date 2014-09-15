@@ -1,24 +1,35 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render
-from django.views.generic import ListView, DetailView
+from django.core.urlresolvers import reverse
+from django.views.generic import ListView, DetailView, CreateView
 
-from profilENS.models import Profile
+from profilENS.models import User
+from profilENS.forms import UserCreationForm
 
-class ProfileView(DetailView):
+class UserView(DetailView):
     context_object_name = "user"
-    model = Profile
-    template_name = "profile/show_profile.html"
+    model = User
+    template_name = "user/show_profile.html"
 
     def get_queryset(self):
-        return Profile.objects.get(
+        return User.objects.get(
                         user__username=self.kwargs['username'])
 
 
-class ProfileList(ListView):
-    model = Profile
-    context_object_name = "profile_list"
-    template_name = "profile/profile_list.html"
+class UserList(ListView):
+    model = User
+    context_object_name = "user_list"
+    template_name = "user/user_list.html"
     paginate_by = 30
 
     def get_queryset(self):
-        return Profile.objects.all()
+        return User.objects.all()
+
+
+class NewUser(CreateView):
+    model = User
+    template_name = 'user/new_user.html'
+    form_class = UserCreationForm
+
+    def get_success_url(self):
+        return reverse('user_list')

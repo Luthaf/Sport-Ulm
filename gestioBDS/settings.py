@@ -39,6 +39,8 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
 )
 
+AUTH_USER_MODEL = 'profilENS.User'
+
 INSTALLED_APPS += (
     'bds',
     'profilENS'
@@ -54,6 +56,7 @@ MIDDLEWARE_CLASSES = (
 )
 
 ROOT_URLCONF = 'gestioBDS.urls'
+APPEND_SLASH = False
 
 WSGI_APPLICATION = 'gestioBDS.wsgi.application'
 
@@ -72,8 +75,9 @@ TEMPLATE_DIRS = (os.path.join(BASE_DIR, 'templates'),
                 )
 
 
+LANGUAGE_CODE = 'fr-FR'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Paris'
 
 USE_TZ = True
 
