@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Django settings for gestioBDS project.
+Django settings for sport@ulm project.
 
 For more information on this file, see
 https://docs.djangoproject.com/en/1.6/topics/settings/
@@ -55,10 +55,10 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'gestioBDS.urls'
+ROOT_URLCONF = 'sport@ulm.urls'
 APPEND_SLASH = False
 
-WSGI_APPLICATION = 'gestioBDS.wsgi.application'
+WSGI_APPLICATION = 'sport@ulm.wsgi.application'
 
 
 # Database
