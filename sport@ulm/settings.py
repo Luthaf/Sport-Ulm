@@ -13,23 +13,9 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '#(iid=)(g0o(fzy_ty2f^c-zsc*h@y2rgblq!b07(a^_!@4$i!'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-TEMPLATE_DEBUG = True
-
-ALLOWED_HOSTS = []
-
+SECRET_KEY = 'minimal'
 
 # Application definition
-
 INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.auth',
@@ -61,16 +47,6 @@ APPEND_SLASH = False
 WSGI_APPLICATION = 'sport@ulm.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/1.6/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
-
 TEMPLATE_DIRS = (os.path.join(BASE_DIR, 'templates'),
                 )
 
@@ -81,12 +57,7 @@ TIME_ZONE = 'Europe/Paris'
 
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.6/howto/static-files/
-
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
-
-MEDIA_URL = '/media/'
-STATIC_ROOT = os.path.join(BASE_DIR, "media")
+try:
+    from local_settings import *
+except ImportError:
+    pass
