@@ -29,7 +29,7 @@ class UserBDS(models.Model):
                                   null=True)
     certificate = models.BooleanField("Certificat",
                                         default=False)
-    certificate_file = models.BooleanField("Certificat")
+#    certificate_file = models.BooleanField("Certificat")
 
     sports = models.ManyToManyField(Sport,
                                     blank=True,
