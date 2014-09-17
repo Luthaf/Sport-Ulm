@@ -11,7 +11,7 @@ Edit the local_settings.py file to fit your needs, and then :
 
 ```
 ./manage.py migrate
-./manage.py createsuperuser
+./manage.py loaddata fixtures/profilENS.json
 ```
 
 # Run
