@@ -1,5 +1,15 @@
 {% extends "base.html" %}
 
+{% block title %}
+    Profil de {{ showed_user.first_name }} {{ showed_user.last_name }}
+{% endblock %}
+
 {% block content %}
-    Test
+    <ul>
+        <li><strong>Email : </strong>{{ showed_user.email }}</li>
+        <li><strong>Téléphone : </strong>{{ showed_user.phone }}</li>
+        <li><strong>Statut : </strong>{{ showed_user.occupation }}</li>
+        <li><strong>Département : </strong>{{ showed_user.departement }}</li>
+        <li>...</li>
+    </ul>
 {% endblock %}

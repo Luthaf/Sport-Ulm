@@ -5,10 +5,26 @@
 {% endblock %}
 
 {% block content %}
-    {% for profile in profile_list %}
-        <h2>{{ profile }}</h2>
-        <div>
-            {{ profile.phone }}
-        </div>
+    <table>
+        <tr>
+            <th>Actions</th>
+            <th>Nom</th>
+            <th>Prénom</th>
+            <th>Email</th>
+            <th>Téléphone</th>
+            <th>Statut</th>
+            <th>Département</th>
+        </tr>
+    {% for user in user_list %}
+        <tr>
+            <td><a href="{% url 'show_user' user.username %}">Voir</a></td>
+            <td>{{ user.first_name }}</td>
+            <td>{{ user.last_name }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.phone }}</td>
+            <td>{{ user.occupation }}</td>
+            <td>{{ user.departement }}</td>
+        </tr>
     {% endfor %}
+    </table>
 {% endblock %}

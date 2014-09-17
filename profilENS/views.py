@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.core.urlresolvers import reverse
 from django.views.generic import ListView, DetailView, CreateView
 
 from profilENS.models import User
 from profilENS.forms import UserCreationForm
 
-class UserView(DetailView):
-    context_object_name = "user"
-    model = User
-    template_name = "user/show_profile.html"
 
-    def get_queryset(self):
-        return User.objects.get(
-                        user__username=self.kwargs['username'])
+class UserView(DetailView):
+    context_object_name = "showed_user"
+    model = User
+    template_name = "user/show_user.html"
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(User, username=self.kwargs["username"])
 
 
 class UserList(ListView):
