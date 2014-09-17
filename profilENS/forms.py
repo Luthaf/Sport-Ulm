@@ -55,10 +55,11 @@ class UserCreationForm(forms.ModelForm):
         model = User
         fieldsets = (
                 (None, {
-                    'fields': ('username',
-                               ('first_name', 'last_name'),
-                               'phone',
-                               'birthdate')
+                    'fields': (('first_name', 'last_name'),
+                                'username',
+                                'email',
+                                'phone',
+                                'birthdate')
                 }),
 
                 ("ENS", {
