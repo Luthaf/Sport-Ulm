@@ -7,13 +7,25 @@ from profilENS.forms import UserCreationForm
 
 
 class UserAdmin(admin.ModelAdmin):
-    fieldsets = UserCreationForm.Meta.fieldsets + (
-                    ("Permissions", {
-                        'fields': ('is_staff', 'is_active',
+    fieldsets = fieldsets = (
+            (None, {
+                 'fields': ('first_name',
+                            'last_name',
+                            'username',
+                            'email',
+                            'phone',
+                            'birthdate')
+            }),
+
+            ("ENS", {
+                'fields': ('departement', 'occupation', 'cotisation')
+            }),
+            ("Permissions", {
+                'fields': ('is_staff', 'is_active',
                                     # 'groups',
-                                 )
-                    }),
-                )
+                        )
+            }),
+    )
     prepopulated_fields = {'username': ('first_name', 'last_name'), }
 
 
