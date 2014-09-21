@@ -1,1 +1,210 @@
-[{"fields": {"name": "Chimie"}, "model": "profilENS.departement", "pk": 1}, {"fields": {"name": "Histoire"}, "model": "profilENS.departement", "pk": 2}, {"fields": {"name": "Lila"}, "model": "profilENS.departement", "pk": 3}, {"fields": {"name": "Math"}, "model": "profilENS.departement", "pk": 4}, {"fields": {"name": "Physique"}, "model": "profilENS.departement", "pk": 5}, {"fields": {"name": "Sciences Sociales"}, "model": "profilENS.departement", "pk": 6}, {"fields": {"name": "Informatique"}, "model": "profilENS.departement", "pk": 7}, {"fields": {"name": "Etudes Cognitives"}, "model": "profilENS.departement", "pk": 8}, {"fields": {"name": "Litt\u00e9rature"}, "model": "profilENS.departement", "pk": 9}, {"fields": {"name": "Diplomatie"}, "model": "profilENS.departement", "pk": 10}, {"fields": {"username": "guillaume-fraux", "departement": 4, "first_name": "Guillaume", "last_name": "Fraux", "phone": "061044273", "occupation": "DOC", "is_active": true, "birthdate": "1992-09-03", "is_superuser": false, "is_staff": false, "last_login": "2014-09-15T14:57:02.792Z", "groups": [], "cotisation": "NOR", "user_permissions": [], "password": "pbkdf2_sha256$12000$bU8uR6isAAug$hFze06q6/F2k032k43mv+UhC2dt/LLMAFrAc/O7A3z8=", "email": "guillaume.fraux@coincoin.fr", "date_joined": "2014-09-15T14:56:48.278Z"}, "model": "profilENS.user", "pk": 1}, {"fields": {"username": "jean-pierre", "departement": 1, "first_name": "Jean", "last_name": "Pierre", "phone": "068534043", "occupation": "1A", "is_active": true, "birthdate": "1994-04-26", "is_superuser": false, "is_staff": false, "last_login": "2014-09-17T12:11:29.438Z", "groups": [], "cotisation": "NOR", "user_permissions": [], "password": "", "email": "jean.pierre@ens.fr", "date_joined": "2014-09-17T12:11:29.438Z"}, "model": "profilENS.user", "pk": 3}, {"fields": {"username": "marie-bouh", "departement": 2, "first_name": "marie", "last_name": "bouh", "phone": "069669006", "occupation": "4A", "is_active": true, "birthdate": "1667-11-28", "is_superuser": false, "is_staff": false, "last_login": "2014-09-17T12:12:29.868Z", "groups": [], "cotisation": "ETU", "user_permissions": [], "password": "", "email": "marie.bouh@gmail.fr", "date_joined": "2014-09-17T12:12:29.868Z"}, "model": "profilENS.user", "pk": 4}, {"fields": {"username": "luc-smith", "departement": 3, "first_name": "Luc", "last_name": "Smith", "phone": "065070760", "occupation": "2A", "is_active": true, "birthdate": "1977-02-25", "is_superuser": false, "is_staff": false, "last_login": "2014-09-17T12:13:19.634Z", "groups": [], "cotisation": "EXT", "user_permissions": [], "password": "", "email": "luc.smith@ens.fr", "date_joined": "2014-09-17T12:13:19.634Z"}, "model": "profilENS.user", "pk": 5}, {"fields": {"username": "corentin-cadiou", "departement": 5, "first_name": "Corentin", "last_name": "Cadiou", "phone": "0756328721", "occupation": "3A", "is_active": true, "birthdate": "1553-05-22", "is_superuser": false, "is_staff": false, "last_login": "2014-09-17T13:50:07.251Z", "groups": [], "cotisation": "NOR", "user_permissions": [], "password": "", "email": "corentin.cadiou@vroum.fr", "date_joined": "2014-09-17T13:50:07.251Z"}, "model": "profilENS.user", "pk": 6}, {"fields": {"username": "admin", "departement": null, "first_name": "", "last_name": "", "phone": "", "occupation": "1A", "is_active": true, "birthdate": null, "is_superuser": true, "is_staff": true, "last_login": "2014-09-17T13:57:13.710Z", "groups": [], "cotisation": "NOR", "user_permissions": [], "password": "pbkdf2_sha256$12000$bSNqXdwBRR1q$HdGoQqvrDwLMBxN0lCFt490Rcisa+6+tWVJicmxZSP4=", "email": "", "date_joined": "2014-09-17T13:57:03.655Z"}, "model": "profilENS.user", "pk": 7}]
+[
+{
+   "fields": {
+      "name": "Chimie"
+   },
+   "model": "profilENS.departement",
+   "pk": 1
+},
+{
+   "fields": {
+      "name": "Histoire"
+   },
+   "model": "profilENS.departement",
+   "pk": 2
+},
+{
+   "fields": {
+      "name": "Lila"
+   },
+   "model": "profilENS.departement",
+   "pk": 3
+},
+{
+   "fields": {
+      "name": "Math"
+   },
+   "model": "profilENS.departement",
+   "pk": 4
+},
+{
+   "fields": {
+      "name": "Physique"
+   },
+   "model": "profilENS.departement",
+   "pk": 5
+},
+{
+   "fields": {
+      "name": "Sciences Sociales"
+   },
+   "model": "profilENS.departement",
+   "pk": 6
+},
+{
+   "fields": {
+      "name": "Informatique"
+   },
+   "model": "profilENS.departement",
+   "pk": 7
+},
+{
+   "fields": {
+      "name": "Etudes Cognitives"
+   },
+   "model": "profilENS.departement",
+   "pk": 8
+},
+{
+   "fields": {
+      "name": "Litt\u00e9rature"
+   },
+   "model": "profilENS.departement",
+   "pk": 9
+},
+{
+   "fields": {
+      "name": "Diplomatie"
+   },
+   "model": "profilENS.departement",
+   "pk": 10
+},
+{
+   "fields": {
+      "username": "guillaume-fraux",
+      "departement": 4,
+      "first_name": "Guillaume",
+      "last_name": "Fraux",
+      "phone": "061044273",
+      "occupation": "DOC",
+      "is_active": true,
+      "birthdate": "1992-09-03",
+      "is_superuser": false,
+      "is_staff": false,
+      "last_login": "2014-09-15T14:57:02.792Z",
+      "groups": [],
+      "cotisation": "NOR",
+      "user_permissions": [],
+      "password": "pbkdf2_sha256$12000$bU8uR6isAAug$hFze06q6/F2k032k43mv+UhC2dt/LLMAFrAc/O7A3z8=",
+      "email": "guillaume.fraux@coincoin.fr",
+      "date_joined": "2014-09-15T14:56:48.278Z"
+   },
+   "model": "profilENS.user",
+   "pk": 1
+},
+{
+   "fields": {
+      "username": "jean-pierre",
+      "departement": 1,
+      "first_name": "Jean",
+      "last_name": "Pierre",
+      "phone": "068534043",
+      "occupation": "1A",
+      "is_active": true,
+      "birthdate": "1994-04-26",
+      "is_superuser": false,
+      "is_staff": false,
+      "last_login": "2014-09-17T12:11:29.438Z",
+      "groups": [],
+      "cotisation": "NOR",
+      "user_permissions": [],
+      "password": "",
+      "email": "jean.pierre@ens.fr",
+      "date_joined": "2014-09-17T12:11:29.438Z"
+   },
+   "model": "profilENS.user",
+   "pk": 3
+},
+{
+   "fields": {
+      "username": "marie-bouh",
+      "departement": 2,
+      "first_name": "marie",
+      "last_name": "bouh",
+      "phone": "069669006",
+      "occupation": "4A",
+      "is_active": true,
+      "birthdate": "1667-11-28",
+      "is_superuser": false,
+      "is_staff": false,
+      "last_login": "2014-09-17T12:12:29.868Z",
+      "groups": [],
+      "cotisation": "ETU",
+      "user_permissions": [],
+      "password": "",
+      "email": "marie.bouh@gmail.fr",
+      "date_joined": "2014-09-17T12:12:29.868Z"
+   },
+   "model": "profilENS.user",
+   "pk": 4
+},
+{
+   "fields": {
+      "username": "luc-smith",
+      "departement": 3,
+      "first_name": "Luc",
+      "last_name": "Smith",
+      "phone": "065070760",
+      "occupation": "2A",
+      "is_active": true,
+      "birthdate": "1977-02-25",
+      "is_superuser": false,
+      "is_staff": false,
+      "last_login": "2014-09-17T12:13:19.634Z",
+      "groups": [],
+      "cotisation": "EXT",
+      "user_permissions": [],
+      "password": "",
+      "email": "luc.smith@ens.fr",
+      "date_joined": "2014-09-17T12:13:19.634Z"
+   },
+   "model": "profilENS.user",
+   "pk": 5
+},
+{
+   "fields": {
+      "username": "corentin-cadiou",
+      "departement": 5,
+      "first_name": "Corentin",
+      "last_name": "Cadiou",
+      "phone": "0756328721",
+      "occupation": "3A",
+      "is_active": true,
+      "birthdate": "1553-05-22",
+      "is_superuser": false,
+      "is_staff": false,
+      "last_login": "2014-09-17T13:50:07.251Z",
+      "groups": [],
+      "cotisation": "NOR",
+      "user_permissions": [],
+      "password": "",
+      "email": "corentin.cadiou@vroum.fr",
+      "date_joined": "2014-09-17T13:50:07.251Z"
+   },
+   "model": "profilENS.user",
+   "pk": 6
+},
+{
+   "fields": {
+      "username": "admin",
+      "departement": null,
+      "first_name": "",
+      "last_name": "",
+      "phone": "",
+      "occupation": "1A",
+      "is_active": true,
+      "birthdate": null,
+      "is_superuser": true,
+      "is_staff": true,
+      "last_login": "2014-09-17T13:57:13.710Z",
+      "groups": [],
+      "cotisation": "NOR",
+      "user_permissions": [],
+      "password": "pbkdf2_sha256$12000$bSNqXdwBRR1q$HdGoQqvrDwLMBxN0lCFt490Rcisa+6+tWVJicmxZSP4=",
+      "email": "",
+      "date_joined": "2014-09-17T13:57:03.655Z"
+   },
+   "model": "profilENS.user",
+   "pk": 7
+}
+]
