@@ -1,0 +1,22 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls admin_static admin_modify %}
+
+{% block extrahead %}{{ block.super }}
+<script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
+{{ media }}
+{% endblock %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}" />{% endblock %}
+
+
+{% block content %}<div id="content-main">
+    <h1>Ajout de {{object.first_name}} {{object.last_name}} au burô {{buro}}</h1>
+    <p>
+        Merci de choisir un mot de passe pour permettre la connection à ce site d'administration.
+    </p>
+    <form  method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Envoyer !">
+    </form></div>
+{% endblock %}
