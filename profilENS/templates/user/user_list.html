@@ -1,10 +1,11 @@
 {% extends "base.html" %}
 
 {% block title %}
-    Liste des profils connus
+    Liste des utilisateurs connus
 {% endblock %}
 
 {% block content %}
+    <a href="{% url 'new_user' %}">Ajouter un utilisateur</a>
     <table>
         <tr>
             <th>Actions</th>
@@ -27,4 +28,6 @@
         </tr>
     {% endfor %}
     </table>
+
+    TODO : pagination
 {% endblock %}
