@@ -17,19 +17,14 @@ class Sport(models.Model):
                              default="ANN",
                              choices=COTIZ_FREQUENCY_CHOICES,
                              max_length=3)
-    # horaire
-    # lieu
 
 
 class UserBDS(models.Model):
-    FFSU_licence = models.BooleanField("Licence FFSU",
-                                        default=False)
     FFSU_number = models.CharField(max_length=50,
                                   blank=True,
                                   null=True)
-    certificate = models.BooleanField("Certificat",
-                                        default=False)
-#    certificate_file = models.BooleanField("Certificat")
+    certificate_file = models.FileField("Certificat",
+                                        upload_to='certifs')
 
     sports = models.ManyToManyField(Sport,
                                     blank=True,
@@ -59,6 +54,7 @@ class Event(models.Model):
                                    through='UsersInEvent')
     class Meta:
         verbose_name = "Évènement"
+
 
 class UsersInEvent(models.Model):
     user = models.ForeignKey(UserBDS)
