@@ -18,7 +18,10 @@
         </tr>
     {% for user in user_list %}
         <tr>
-            <td><a href="{% url 'show_user' user.username %}">Voir</a></td>
+            <td>
+                <a href="{% url 'show_user' user.username %}">Voir</a>
+                <a href="{% url 'edit_user' user.username %}">Modifier</a>
+            </td>
             <td>{{ user.first_name }}</td>
             <td>{{ user.last_name }}</td>
             <td>{{ user.email }}</td>

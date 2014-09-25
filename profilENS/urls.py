@@ -2,7 +2,7 @@
 
 from django.conf.urls import patterns, url
 
-from profilENS.views import UserView, UserList, NewUser
+from profilENS.views import UserView, UserList, NewUser, EditUser
 
 urlpatterns = patterns('profilENS.views',
     url(r'^$',
@@ -14,7 +14,7 @@ urlpatterns = patterns('profilENS.views',
     url(r'^(?P<username>[\w-]+)/$',
         UserView.as_view(),
         name='show_user'),
-#    url(r'^(?P<username>[\w-]+)/edit$',
-#        EditUser.as_view(),
-#        name='edit_user'),
+    url(r'^(?P<username>[\w-]+)/edit$',
+        EditUser.as_view(),
+        name='edit_user'),
 )

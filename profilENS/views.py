@@ -8,14 +8,16 @@ from django.contrib.auth.models import Group
 from profilENS.models import User
 from profilENS.forms import UserCreationForm, AddUserToBuroForm
 
+class GetUserByUsernameMixin:
+    '''Mixin to get an User by it's username'''
+    def get_object(self, queryset=None):
+        return get_object_or_404(User, username=self.kwargs["username"])
 
-class UserView(DetailView):
+
+class UserView(GetUserByUsernameMixin, DetailView):
     context_object_name = "showed_user"
     model = User
     template_name = "user/show_user.html"
-
-    def get_object(self, queryset=None):
-        return get_object_or_404(User, username=self.kwargs["username"])
 
 
 class UserList(ListView):
@@ -31,6 +33,15 @@ class UserList(ListView):
 class NewUser(CreateView):
     model = User
     template_name = 'user/new_user.html'
+    form_class = UserCreationForm
+
+    def get_success_url(self):
+        return reverse('user_list')
+
+
+class EditUser(GetUserByUsernameMixin, UpdateView):
+    template_name = 'user/edit_user.html'
+    model = User
     form_class = UserCreationForm
 
     def get_success_url(self):

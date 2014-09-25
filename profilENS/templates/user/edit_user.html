@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Liste des utilisateurs connus
+{% endblock %}
+
+{% block content %}
+    <a href="{% url 'user_list' %}">Retour à la liste des utilisateurs</a>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Modifier l'utilisateur"/>
+    </form>
+{% endblock %}
