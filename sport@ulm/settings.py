@@ -28,6 +28,7 @@ INSTALLED_APPS = (
 AUTH_USER_MODEL = 'profilENS.User'
 
 INSTALLED_APPS += (
+    'commons',
     'bds',
     'profilENS'
 )

@@ -49,4 +49,15 @@ class User(AbstractUser):
                                  blank=True,
                                  null=True)
 
+    def __unicode__(self):
+        if self.first_name and self.last_name:
+            u = self.first_name + " " + self.last_name
+        elif self.first_name:
+            u = self.first_name
+        elif self.last_name:
+            u = self.last_name
+        else:
+            u = self.username
+        return u
+
     #TODO: Add a password change view

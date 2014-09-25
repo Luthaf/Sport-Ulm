@@ -8,6 +8,7 @@ from django.contrib.auth.models import Group
 from profilENS.models import User
 from profilENS.forms import UserCreationForm, AddUserToBuroForm
 
+
 class GetUserByUsernameMixin:
     '''Mixin to get an User by it's username'''
     def get_object(self, queryset=None):
@@ -32,7 +33,7 @@ class UserList(ListView):
 
 class NewUser(CreateView):
     model = User
-    template_name = 'user/new_user.html'
+    template_name = 'commons/new_object.html'
     form_class = UserCreationForm
 
     def get_success_url(self):
@@ -40,7 +41,7 @@ class NewUser(CreateView):
 
 
 class EditUser(GetUserByUsernameMixin, UpdateView):
-    template_name = 'user/edit_user.html'
+    template_name = 'commons/edit_object.html'
     model = User
     form_class = UserCreationForm
 

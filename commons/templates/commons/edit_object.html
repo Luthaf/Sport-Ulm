@@ -1,0 +1,15 @@
+{% extends "commons/base.html" %}{% load models %}
+
+{% block title %}
+    Modifier l'{{object|model_name}} {{object}}
+{% endblock %}
+
+{% block content %}
+    {% model_url url_name object _list %}
+    <a href="{% url url_name %}">Retour à la liste des {{object|plural_model_name}}</a>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Modifier l'{{object|model_name}}"/>
+    </form>
+{% endblock %}
