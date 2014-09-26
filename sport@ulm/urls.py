@@ -5,8 +5,5 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    url(r'^', include('bds.urls')),
-    url(r'^users/', include('profilENS.urls')),
-
     url(r'^admin/', include(admin.site.urls)),
 )

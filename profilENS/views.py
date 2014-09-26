@@ -1,52 +1,12 @@
 # -*- coding: utf-8 -*-
-from django.shortcuts import render, get_object_or_404
-from django.core.urlresolvers import reverse, reverse_lazy
-from django.views.generic import ListView, DetailView, CreateView, UpdateView
+from django.shortcuts import get_object_or_404
+from django.core.urlresolvers import reverse_lazy
+from django.views.generic import UpdateView
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import Group
 
 from profilENS.models import User
-from profilENS.forms import UserCreationForm, AddUserToBuroForm
-
-
-class GetUserByUsernameMixin:
-    '''Mixin to get an User by it's username'''
-    def get_object(self, queryset=None):
-        return get_object_or_404(User, username=self.kwargs["username"])
-
-
-class UserView(GetUserByUsernameMixin, DetailView):
-    context_object_name = "showed_user"
-    model = User
-    template_name = "user/show_user.html"
-
-
-class UserList(ListView):
-    model = User
-    context_object_name = "user_list"
-    template_name = "user/user_list.html"
-    paginate_by = 30
-
-    def get_queryset(self):
-        return User.objects.all()
-
-
-class NewUser(CreateView):
-    model = User
-    template_name = 'commons/new_object.html'
-    form_class = UserCreationForm
-
-    def get_success_url(self):
-        return reverse('user_list')
-
-
-class EditUser(GetUserByUsernameMixin, UpdateView):
-    template_name = 'commons/edit_object.html'
-    model = User
-    form_class = UserCreationForm
-
-    def get_success_url(self):
-        return reverse('user_list')
+from profilENS.forms import AddUserToBuroForm
 
 
 class AddUserToBuro(UpdateView):
