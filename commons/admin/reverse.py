@@ -60,8 +60,10 @@ from django.contrib.admin.options import InlineModelAdmin
 from django.contrib.admin.util import flatten_fieldsets
 from django.db.models import OneToOneField, ForeignKey
 from django.forms import ModelForm
-from django.forms.models import BaseModelFormSet, modelformset_factory, ModelFormMetaclass, inlineformset_factory
+from django.forms.models import BaseModelFormSet, modelformset_factory, ModelFormMetaclass
 from django.utils.functional import curry
+
+import copy
 
 
 class ReverseInlineFormSet(BaseModelFormSet):
@@ -88,8 +90,6 @@ class ReverseInlineFormSet(BaseModelFormSet):
         super(ReverseInlineFormSet, self).__init__(data, files,
                                                        prefix = prefix,
                                                        queryset = qs)
-        for form in self.forms:
-            form.empty_permitted = False
 
 def reverse_inlineformset_factory(model,
                                   parent_fk_name,
@@ -161,9 +161,8 @@ class ReverseInlineModelAdmin(InlineModelAdmin):
 
 class ReverseModelAdmin(ModelAdmin):
     '''
-    Patched ModelAdmin class. The add_view method is overridden to
-    allow the reverse inline formsets to be saved before the parent
-    model.
+    Patched ModelAdmin class to allow OneToOneField to be rendered as Inline
+    FormSets
     '''
     def __init__(self, model, admin_site):
 
@@ -195,11 +194,44 @@ class ReverseModelAdmin(ModelAdmin):
                 if kwargs:
                     inline.__dict__.update(kwargs)
                 inline_instances.append(inline)
-                self.exclude.append(name)
             self.tmp_inline_instances = inline_instances
 
-    def get_inline_instances(self, request, obj=None):
-        return self.tmp_inline_instances + super(ReverseModelAdmin, self).get_inline_instances(request, obj)
+    def _get_inlines(self, request, obj=None, change=False):
+        '''
+        Dynamically add an help text, basing on the change parameter
+        '''
+        print dir(self)
+        # Do copy in order to keep trace of the original help text
+        inline_instances = [copy.copy(i) for i in self.tmp_inline_instances]
+
+        # In the add view, change the help text
+        if not change:
+            for inline in inline_instances:
+                name = inline.verbose_name.lower()
+                inline.verbose_name = ("Choisissez un {} dans la liste, ou "
+                                      "ajoutez en un nouveau ici".format(name))
+        return inline_instances + super(ReverseModelAdmin,
+                                self).get_inline_instances(request, obj)
+
+
+    def add_view(self, request, form_url='', extra_context=None):
+        self.get_inline_instances = lambda request, obj : self._get_inlines(request,
+                                                                            obj,
+                                                                            change=False)
+        return super(ReverseModelAdmin, self).add_view(request,
+                                                       form_url,
+                                                       extra_context)
+
+    def change_view(self, request, object_id, form_url='', extra_context=None):
+        self.get_inline_instances = lambda request, obj : self._get_inlines(request,
+                                                                            obj,
+                                                                            change=True)
+        for field_name in self.inline_reverse:
+            self.exclude.append(field_name[0])
+        return super(ReverseModelAdmin, self).change_view(request,
+                                                          object_id,
+                                                          form_url,
+                                                          extra_context)
 
     def save_model(self, request, obj, form, change):
         '''
@@ -208,12 +240,13 @@ class ReverseModelAdmin(ModelAdmin):
         should be saved first.
         '''
         if change:
-            super(ReverseModelAdmin, self).save_model(request,
-                                                      obj,
-                                                      form,
-                                                      change)
+            return super(ReverseModelAdmin, self).save_model(request,
+                                                             obj,
+                                                             form,
+                                                             change)
         else:
             self.tmp_object = obj
+            return self.tmp_object
 
     def save_related(self, request, form, formsets, change):
         '''
@@ -226,12 +259,13 @@ class ReverseModelAdmin(ModelAdmin):
                                                                change)
 
         for field_name in self.inline_reverse:
-            obj = _get_object_from_formset(formsets, field_name[0])
-            if obj:
-                setattr(self.tmp_object, field_name[0], obj[0])
+            for obj in _get_object_from_formset(formsets, field_name[0]):
+                if obj:
+                    setattr(self.tmp_object, field_name[0], obj[0])
         #TODO: check if this works for multiple OneToOne
 
-        self.tmp_object.save()
+        obj = self.tmp_object.save()
+        return obj
 
 
 
@@ -239,4 +273,4 @@ def _get_object_from_formset(formsets, field_name):
     for formset in formsets:
         if formset.parent_fk_name == field_name:
             if formset.is_valid():
-                return formset.save()
+                yield formset.save()
