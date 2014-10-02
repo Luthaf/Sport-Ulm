@@ -1,17 +1,13 @@
 # -*- coding: utf-8 -*-
 from django.contrib import admin
-from django.db import models
-
-from commons.admin.reverse import ReverseModelAdmin
 
 from bds.models import Sportif, Sport, UsersInSport, Event, UsersInEvent
-from profilENS.forms import UserCreationForm
 from profilENS.models import User
 
 def boolean(description=""):
     """
     Convert a admin class method to a boolean widget,
-    with short_description=description 
+    with short_description=description
     """
     def decorator(func):
         def wrapper(self, *args, **kwargs):
@@ -33,9 +29,7 @@ def get_model_fields(model):
 user_fields = get_model_fields(User)
 
 
-class SportifAdmin(ReverseModelAdmin):
-    inline_type = 'stacked'
-    inline_reverse = (('user', UserCreationForm), )
+class SportifAdmin(admin.ModelAdmin):
     list_display = ('user', 'have_ffsu', 'have_certificate', 'phone', 'email', 'departement',
                     'occupation', 'cotisation')
 
