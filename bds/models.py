@@ -20,6 +20,9 @@ class Sport(models.Model):
                              choices=COTIZ_FREQUENCY_CHOICES,
                              max_length=3)
 
+    def __unicode__(self):
+        return self.name
+
 
 class Sportif(models.Model):
     user = models.OneToOneField(User, verbose_name="Utilisateur")
@@ -48,7 +51,11 @@ class UsersInSport(models.Model):
                                 default=False)
 
     class Meta:
-        verbose_name = "Cotisation"
+        verbose_name = "Lien utilisateurs-sports"
+        verbose_name_plural = "Liens utilisateurs-sports"
+
+    def __unicode__(self):
+        return self.user.__unicode__() + "fait du" + self.sport.__unicode__()
 
 
 class Event(models.Model):
@@ -62,6 +69,9 @@ class Event(models.Model):
     class Meta:
         verbose_name = "Évènement"
 
+    def __unicode__(self):
+        return self.name
+
 
 class UsersInEvent(models.Model):
     user = models.ForeignKey(Sportif)
@@ -70,4 +80,8 @@ class UsersInEvent(models.Model):
                                 default=False)
 
     class Meta:
-        verbose_name = "Participant"
+        verbose_name = "Participant aux évènements"
+        verbose_name_plural = "Participants aux évènements"
+
+    def __unicode__(self):
+        return self.user
