@@ -12,7 +12,7 @@ from profilENS.views import AddUserToBuro
 class UserAdmin(admin.ModelAdmin):
 
     actions = ['add_to_buro']
-    list_display = ('first_name', 'last_name', 'phone', 'email', 'departement',
+    list_display = ('user', 'phone', 'email', 'departement',
                     'occupation', 'cotisation', 'user_group', 'is_staff')
     list_filter = ('occupation', 'cotisation', 'is_staff')
 
@@ -37,6 +37,10 @@ class UserAdmin(admin.ModelAdmin):
         '''Show all the groups of the user'''
         return ", ".join([group.name for group in user.groups.all()])
     user_group.short_description = "Burô"
+
+    def user(self, obj):
+        return obj.__unicode__()
+    user.short_description = "Utilisateur"
 
     def add_to_buro(self, request, queryset):
         kwargs = {}
