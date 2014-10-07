@@ -4,6 +4,7 @@ from django.core.urlresolvers import reverse
 
 from bds.models import Sportif, Sport, UsersInSport, Event, UsersInEvent, \
                        EventOption
+from bds.filters import boolean_filter_factory
 from profilENS.models import User
 
 def boolean(description=""):
@@ -37,12 +38,10 @@ class SportsInline(admin.TabularInline):
 
 
 class SportifAdmin(admin.ModelAdmin):
-    list_display = ('user', 'have_ffsu', 'have_certificate', 'phone', 'email', 'departement',
-                    'occupation', 'cotisation')
-
-    # TODO: check at https://docs.djangoproject.com/en/dev/ref/contrib/admin/#django.contrib.admin.ModelAdmin.list_filter
-    # http://stackoverflow.com/a/1294952
-    #list_filter = ('have_ffsu', 'have_certificate')
+    list_display = ('user', 'have_ffsu', 'have_certificate', 'phone', 'email',
+                   'departement', 'occupation', 'cotisation')
+    list_filter = (boolean_filter_factory('have_ffsu'),
+                   boolean_filter_factory('have_certificate'))
 
     inlines = [SportsInline,]
 
@@ -54,7 +53,7 @@ class SportifAdmin(admin.ModelAdmin):
         except AttributeError:
             locals()[attr].short_description = attr
 
-    @boolean(description="FFSU")
+    @boolean(description="n° FFSU")
     def have_ffsu(self, obj):
         return obj.FFSU_number != ""
 
