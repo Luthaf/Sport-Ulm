@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.core.urlresolvers import reverse
 
 from bds.models import Sportif, Sport, UsersInSport, Event, UsersInEvent, \
-                       EventPrice
+                       EventOption
 from profilENS.models import User
 
 def boolean(description=""):
@@ -77,14 +77,14 @@ class SportAdmin(admin.ModelAdmin):
     respo_name.allow_tags = True
 
 
-class EventPriceInline(admin.TabularInline):
-    model = EventPrice
+class EventOptionInline(admin.TabularInline):
+    model = EventOption
     extra = 1
 
 
 class EventAdmin(admin.ModelAdmin):
     list_display = ('name', 'participants')
-    inlines = [EventPriceInline]
+    inlines = [EventOptionInline]
 
     def participants(self, obj):
         return obj.users.all().count()
