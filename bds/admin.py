@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 from django.contrib import admin
+from django.core.urlresolvers import reverse
 
-from bds.models import Sportif, Sport, UsersInSport, Event, UsersInEvent
+from bds.models import Sportif, Sport, UsersInSport, Event, UsersInEvent, \
+                       EventPrice
 from profilENS.models import User
 
 def boolean(description=""):
@@ -29,6 +31,11 @@ def get_model_fields(model):
 user_fields = get_model_fields(User)
 
 
+class SportsInline(admin.TabularInline):
+    model = Sportif.sports.through
+    extra = 0
+
+
 class SportifAdmin(admin.ModelAdmin):
     list_display = ('user', 'have_ffsu', 'have_certificate', 'phone', 'email', 'departement',
                     'occupation', 'cotisation')
@@ -36,6 +43,8 @@ class SportifAdmin(admin.ModelAdmin):
     # TODO: check at https://docs.djangoproject.com/en/dev/ref/contrib/admin/#django.contrib.admin.ModelAdmin.list_filter
     # http://stackoverflow.com/a/1294952
     #list_filter = ('have_ffsu', 'have_certificate')
+
+    inlines = [SportsInline,]
 
     for attr in ['phone', 'email', 'departement', 'occupation', 'cotisation']:
         locals()[attr] = lambda self, obj, attr=attr : getattr(obj.user, attr)
@@ -54,8 +63,43 @@ class SportifAdmin(admin.ModelAdmin):
         return obj.certificate_file != ""
 
 
+class SportAdmin(admin.ModelAdmin):
+    list_display = ('name', 'price', 'respo_name', 'cotisation_frequency')
+
+    def respo_name(self, obj):
+        respos = obj.respo.all()
+        respos_urls = []
+        for respo in respos:
+            url = reverse("admin:bds_sportif_change", args=(respo.id,))
+            respos_urls.append('<a href="' + url + '">' + str(respo) + "</a>")
+        return "\n".join(respos_urls)
+    respo_name.short_description = "Respo(s)"
+    respo_name.allow_tags = True
+
+
+class EventPriceInline(admin.TabularInline):
+    model = EventPrice
+    extra = 1
+
+
+class EventAdmin(admin.ModelAdmin):
+    list_display = ('name', 'participants')
+    inlines = [EventPriceInline]
+
+    def participants(self, obj):
+        return obj.users.all().count()
+
+
+class UsersInEventAdmin(admin.ModelAdmin):
+    list_display = ('user', 'event', 'payed')
+    list_filter = ('event', 'payed')
+
+    #formfield_overrides = {
+    #        models.ManyToManyField: {'widget': CheckboxSelectMultiple},
+    #    }
+
+
 admin.site.register(Sportif, SportifAdmin)
-admin.site.register(Sport)
-admin.site.register(UsersInSport)
-admin.site.register(Event)
-admin.site.register(UsersInEvent)
+admin.site.register(Sport, SportAdmin)
+admin.site.register(Event, EventAdmin)
+admin.site.register(UsersInEvent, UsersInEventAdmin)
