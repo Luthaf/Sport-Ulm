@@ -69,11 +69,26 @@ class Event(models.Model):
         return self.name
 
 
+class EventOption(models.Model):
+    event = models.ForeignKey(Event,
+                              verbose_name="Évènement",
+                              related_name="prices")
+    price = models.IntegerField("Tarif (€)")
+    description = models.CharField("Description",
+                                   max_length=255)
+
+    class Meta:
+        verbose_name = "Prix d'évènement"
+
+    def __unicode__(self):
+        return self.description
+
+
 class UsersInEvent(models.Model):
-    user = models.ForeignKey(Sportif)
-    event = models.ForeignKey(Event)
-    payed = models.BooleanField("Payé",
-                                default=False)
+    user = models.ForeignKey(Sportif, verbose_name="Sportif")
+    event = models.ForeignKey(Event, verbose_name="Évènement")
+    options = models.ManyToManyField(EventOption, verbose_name="Options")
+    payed = models.BooleanField("Payé", default=False)
 
     class Meta:
         verbose_name = "Participant aux évènements"
