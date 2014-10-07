@@ -10,11 +10,11 @@ COTIZ_FREQUENCY_CHOICES = (
 
 
 class Sport(models.Model):
-    name = models.CharField(max_length=50)
-    price = models.IntegerField("Cotisation",
+    name = models.CharField("Nom", max_length=50)
+    price = models.IntegerField(u"Cotisation (€)",
                                 blank=True,
                                 null=True)
-    respo = models.ManyToManyField("Sportif")
+    respo = models.ManyToManyField("Sportif", blank=True, null=True)
     cotisation_frequency = models.CharField("Fréquence de la cotisation",
                              default="ANN",
                              choices=COTIZ_FREQUENCY_CHOICES,
@@ -45,24 +45,20 @@ class Sportif(models.Model):
 
 
 class UsersInSport(models.Model):
-    user = models.ForeignKey(Sportif)
-    sport = models.ForeignKey(Sport)
+    user = models.ForeignKey(Sportif, verbose_name="Sportif")
+    sport = models.ForeignKey(Sport, verbose_name="Sport")
     payed = models.BooleanField("Payé",
                                 default=False)
 
     class Meta:
-        verbose_name = "Lien utilisateurs-sports"
-        verbose_name_plural = "Liens utilisateurs-sports"
+        verbose_name = "Sport"
 
     def __unicode__(self):
-        return self.user.__unicode__() + "fait du" + self.sport.__unicode__()
+        return self.user.__unicode__() + " fait du " + self.sport.__unicode__()
 
 
 class Event(models.Model):
-    name = models.CharField(max_length=50)
-    price = models.IntegerField("Tarif",
-                                blank=True,
-                                null=True)
+    name = models.CharField(max_length=50, verbose_name="Nom")
     users = models.ManyToManyField(Sportif,
                                    blank=True,
                                    through='UsersInEvent')
@@ -84,4 +80,4 @@ class UsersInEvent(models.Model):
         verbose_name_plural = "Participants aux évènements"
 
     def __unicode__(self):
-        return self.user
+        return self.user.__unicode__()
