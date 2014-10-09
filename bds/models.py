@@ -29,7 +29,7 @@ class Sportif(models.Model):
     FFSU_number = models.CharField(max_length=50,
                                   blank=True,
                                   null=True)
-    certificate_file = models.FileField("Certificat",
+    certificate_file = models.FileField("Certificat médical",
                                         upload_to='certifs',
                                         blank=True)
 

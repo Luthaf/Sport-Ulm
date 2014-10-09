@@ -11,12 +11,14 @@ OCCUPATION_CHOICES = (
     ('ARC', "Archicube"),
     ('DOC', "Doctorant"),
     ('CST', "CST"),
+    ('PER', "Personnel ENS"),
 )
 
 TYPE_COTIZ_CHOICES = (
     ('ETU', "Étudiant"),
     ('NOR', "Normalien"),
     ('EXT', "Extérieur"),
+    ('ARC', "Archicube"),
 )
 
 
