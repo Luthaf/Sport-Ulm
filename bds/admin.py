@@ -38,8 +38,9 @@ class SportsInline(admin.TabularInline):
 
 
 class SportifAdmin(admin.ModelAdmin):
-    list_display = ('user', 'have_ffsu', 'have_certificate', 'phone', 'email',
-                   'departement', 'occupation', 'cotisation', 'respo')
+    list_display = ('user', 'have_ffsu', 'is_AS_PSL', 'have_certificate',
+                    'phone', 'email', 'departement', 'occupation',
+                    'cotisation', 'respo')
     list_filter = (boolean_filter_factory('have_ffsu'),
                    boolean_filter_factory('have_certificate'))
 
@@ -56,6 +57,10 @@ class SportifAdmin(admin.ModelAdmin):
     @boolean(description="n° FFSU")
     def have_ffsu(self, obj):
         return obj.FFSU_number != ""
+
+    @boolean(description="AS PSL")
+    def is_AS_PSL(self, obj):
+        return obj.ASPSL_number != ""
 
     @boolean(description="Certificat")
     def have_certificate(self, obj):
