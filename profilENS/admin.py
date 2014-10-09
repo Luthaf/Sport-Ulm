@@ -70,5 +70,3 @@ class UserAdmin(admin.ModelAdmin):
 
 admin.site.register(Departement)
 admin.site.register(User, UserAdmin)
-
-admin.site.unregister(Group)
