@@ -39,7 +39,7 @@ class SportsInline(admin.TabularInline):
 
 class SportifAdmin(admin.ModelAdmin):
     list_display = ('user', 'have_ffsu', 'have_certificate', 'phone', 'email',
-                   'departement', 'occupation', 'cotisation')
+                   'departement', 'occupation', 'cotisation', 'respo')
     list_filter = (boolean_filter_factory('have_ffsu'),
                    boolean_filter_factory('have_certificate'))
 
@@ -60,6 +60,11 @@ class SportifAdmin(admin.ModelAdmin):
     @boolean(description="Certificat")
     def have_certificate(self, obj):
         return obj.certificate_file != ""
+
+    def respo(self, obj):
+        '''Show the sports this sportif is respo'''
+        return ", ".join([sport.name for sport in obj.sports.all() if obj in sport.respo.all()])
+    respo.short_description = "Respo"
 
 
 class SportAdmin(admin.ModelAdmin):
