@@ -17,6 +17,10 @@ SECRET_KEY = 'minimal'
 
 # Application definition
 INSTALLED_APPS = (
+    'suit',
+)
+
+INSTALLED_APPS += (
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -25,12 +29,23 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
 )
 
-AUTH_USER_MODEL = 'profilENS.User'
-
 INSTALLED_APPS += (
     'commons',
     'bds',
-    'profilENS'
+    'profilENS',
+)
+
+AUTH_USER_MODEL = 'profilENS.User'
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.contrib.auth.context_processors.auth',
+    'django.core.context_processors.debug',
+    'django.core.context_processors.i18n',
+    'django.core.context_processors.media',
+    'django.core.context_processors.static',
+    'django.core.context_processors.tz',
+    'django.contrib.messages.context_processors.messages',
+    'django.core.context_processors.request',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -47,10 +62,14 @@ APPEND_SLASH = False
 
 WSGI_APPLICATION = 'sport@ulm.wsgi.application'
 
+TEMPLATE_DIRS = (
+    os.path.join(BASE_DIR, 'templates'),
+)
 
-TEMPLATE_DIRS = (os.path.join(BASE_DIR, 'templates'),
-                )
-
+SUIT_CONFIG = {
+    'ADMIN_NAME': 'Sport@Ulm',
+    'SEARCH_URL': '',
+}
 
 LANGUAGE_CODE = 'fr-FR'
 
