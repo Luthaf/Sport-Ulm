@@ -39,7 +39,7 @@ class UserAdmin(admin.ModelAdmin):
     user_group.short_description = "Burô"
 
     def user(self, obj):
-        return obj.__unicode__()
+        return obj.__str__()
     user.short_description = "Utilisateur"
 
     def add_to_buro(self, request, queryset):

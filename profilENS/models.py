@@ -26,8 +26,8 @@ class Departement(models.Model):
     name = models.CharField("Département",
                             max_length = 50)
 
-    def __unicode__(self):
-        return unicode(self.name)
+    def __str__(self):
+        return self.name
 
 
 class User(AbstractUser):
@@ -51,7 +51,7 @@ class User(AbstractUser):
                                  blank=True,
                                  null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         if self.first_name and self.last_name:
             u = self.first_name + " " + self.last_name
         elif self.first_name:

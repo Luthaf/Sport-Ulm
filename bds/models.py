@@ -20,7 +20,7 @@ class Sport(models.Model):
                              choices=COTIZ_FREQUENCY_CHOICES,
                              max_length=3)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
@@ -42,8 +42,8 @@ class Sportif(models.Model):
     class Meta:
         verbose_name = "Sportif"
 
-    def __unicode__(self):
-        return self.user.__unicode__()
+    def __str__(self):
+        return self.user.__str__()
 
 
 class UsersInSport(models.Model):
@@ -55,8 +55,8 @@ class UsersInSport(models.Model):
     class Meta:
         verbose_name = "Sport"
 
-    def __unicode__(self):
-        return self.user.__unicode__() + " fait du " + self.sport.__unicode__()
+    def __str__(self):
+        return self.user.__str__() + " fait du " + self.sport.__str__()
 
 
 class Event(models.Model):
@@ -67,7 +67,7 @@ class Event(models.Model):
     class Meta:
         verbose_name = "Évènement"
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
@@ -82,7 +82,7 @@ class EventOption(models.Model):
     class Meta:
         verbose_name = "Prix d'évènement"
 
-    def __unicode__(self):
+    def __str__(self):
         return self.description
 
 
@@ -96,5 +96,5 @@ class UsersInEvent(models.Model):
         verbose_name = "Participant aux évènements"
         verbose_name_plural = "Participants aux évènements"
 
-    def __unicode__(self):
-        return self.user.__unicode__()
+    def __str__(self):
+        return self.user.__str__()
