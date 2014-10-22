@@ -25,6 +25,13 @@ class Sport(models.Model):
 
 
 class Sportif(models.Model):
+
+    COTIZ_DURATION_CHOICES = (
+        ('ANN', 'Année'),
+        ('SE1', 'Premier semestre'),
+        ('SE2', 'Deuxième semestre'),
+    )
+
     user = models.OneToOneField(User, verbose_name="Utilisateur")
     FFSU_number = models.CharField(max_length=50,
                                   blank=True,
@@ -38,6 +45,10 @@ class Sportif(models.Model):
     ASPSL_number = models.CharField(max_length=50,
                                     blank=True,
                                     null=True)
+    cotisation_period = models.CharField("Inscription",
+                             default="ANN",
+                             choices=COTIZ_DURATION_CHOICES,
+                             max_length=3)
 
     class Meta:
         verbose_name = "Sportif"
