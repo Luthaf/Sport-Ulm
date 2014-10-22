@@ -21,7 +21,11 @@ class Sport(models.Model):
                              max_length=3)
 
     def __str__(self):
-        return self.name
+        if self.price:
+            rep = self.name + ' ( ' + str(self.price) + ' € )'
+        else:
+            rep = self.name
+        return rep
 
 
 class Sportif(models.Model):
