@@ -18,7 +18,7 @@ class UserAdmin(admin.ModelAdmin):
     actions = ['add_to_buro']
     list_display = ('user', 'phone', 'email', 'departement',
                     'occupation', 'cotisation', 'user_group', 'is_staff')
-    list_filter = ('occupation', 'cotisation', 'is_staff')
+    list_filter = ('occupation', 'cotisation', 'departement', 'is_staff')
     fieldsets = (
             (None, {
                  'fields': ('first_name',
