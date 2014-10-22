@@ -43,7 +43,7 @@ class SportifAdmin(admin.ModelAdmin):
     list_display = ('user', 'have_ffsu', 'is_AS_PSL', 'have_certificate',
                     'phone', 'email', 'departement', 'occupation',
                     'cotisation', 'respo')
-    list_filter = (boolean_filter_factory('have_certificate'),
+    list_filter = ('have_certificate',
                    boolean_filter_factory('have_ffsu'),
                    boolean_filter_factory("is_AS_PSL"),
                    )
@@ -67,10 +67,6 @@ class SportifAdmin(admin.ModelAdmin):
     @boolean(description="AS PSL")
     def is_AS_PSL(self, obj):
         return obj.ASPSL_number != ""
-
-    @boolean(description="Certificat")
-    def have_certificate(self, obj):
-        return obj.certificate_file != ""
 
     def respo(self, obj):
         '''Show the sports this sportif is respo'''

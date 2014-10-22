@@ -8,6 +8,7 @@ OCCUPATION_CHOICES = (
     ('2A', "2A"),
     ('3A', "3A"),
     ('4A', "4A"),
+    ('MAG', "Magistérien"),
     ('ARC', "Archicube"),
     ('DOC', "Doctorant"),
     ('CST', "CST"),

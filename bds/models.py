@@ -41,7 +41,9 @@ class Sportif(models.Model):
                                   max_length=50,
                                   blank=True,
                                   null=True)
-    certificate_file = models.FileField("Certificat médical",
+    have_certificate = models.BooleanField("Certificat médical",
+                                            default=False)
+    certificate_file = models.FileField("Fichier de certificat médical",
                                         upload_to='certifs',
                                         blank=True)
     sports = models.ManyToManyField(Sport,
@@ -81,6 +83,10 @@ class Event(models.Model):
     users = models.ManyToManyField(Sportif,
                                    blank=True,
                                    through='UsersInEvent')
+    description = models.CharField("description",
+                                   max_length=255,
+                                   null=True,
+                                   blank=True)
     class Meta:
         verbose_name = "Évènement"
 
@@ -106,7 +112,10 @@ class EventOption(models.Model):
 class UsersInEvent(models.Model):
     user = models.ForeignKey(Sportif, verbose_name="Sportif")
     event = models.ForeignKey(Event, verbose_name="Évènement")
-    options = models.ManyToManyField(EventOption, verbose_name="Options")
+    options = models.ManyToManyField(EventOption,
+                                     verbose_name="Options",
+                                     blank=True,
+                                     null=True)
     payed = models.BooleanField("Payé", default=False)
 
     class Meta:
