@@ -60,7 +60,7 @@ class Sportif(models.Model):
         verbose_name = "Sportif"
 
     def __str__(self):
-        return self.user.__str__()
+        return str(self.user)
 
 
 class UsersInSport(models.Model):
@@ -73,7 +73,7 @@ class UsersInSport(models.Model):
         verbose_name = "Sport"
 
     def __str__(self):
-        return self.user.__str__() + " fait du " + self.sport.__str__()
+        return str(self.user) + " fait du " + str(self.sport)
 
 
 class Event(models.Model):
@@ -114,4 +114,4 @@ class UsersInEvent(models.Model):
         verbose_name_plural = "Participants aux évènements"
 
     def __str__(self):
-        return self.user.__str__()
+        return str(self.user)
