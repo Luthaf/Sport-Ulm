@@ -2,6 +2,7 @@
 from django.db import models
 
 from profilENS.models import User
+from commons.models import PlaceAndTime, EventPlaceAndTime
 
 COTIZ_FREQUENCY_CHOICES = (
     ("SEM", "Semestrielle"),
@@ -19,6 +20,8 @@ class Sport(models.Model):
                              default="ANN",
                              choices=COTIZ_FREQUENCY_CHOICES,
                              max_length=3)
+    locations = models.ManyToManyField(PlaceAndTime,
+                                       verbose_name="Dates et lieux")
 
     def __str__(self):
         if self.price:
@@ -87,6 +90,9 @@ class Event(models.Model):
                                    max_length=255,
                                    null=True,
                                    blank=True)
+    location = models.ManyToManyField(EventPlaceAndTime,
+                                      verbose_name="Dates et lieux")
+
     class Meta:
         verbose_name = "Évènement"
 
