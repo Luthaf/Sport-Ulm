@@ -4,7 +4,11 @@ from django.contrib.auth.models import Group
 from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
 from django.conf.urls import patterns, url
+from django.db import models
 
+from selectable.forms.widgets import AutoCompleteSelectWidget
+
+from profilENS.lookups import DepartementLookup
 from profilENS.models import Departement, User
 from profilENS.views import AddUserToBuro
 
@@ -15,7 +19,6 @@ class UserAdmin(admin.ModelAdmin):
     list_display = ('user', 'phone', 'email', 'departement',
                     'occupation', 'cotisation', 'user_group', 'is_staff')
     list_filter = ('occupation', 'cotisation', 'is_staff')
-
     fieldsets = (
             (None, {
                  'fields': ('first_name',
@@ -30,6 +33,12 @@ class UserAdmin(admin.ModelAdmin):
                 'fields': ('departement', 'occupation', 'cotisation')
             }),
     )
+
+    formfield_overrides = {
+        models.ForeignKey:
+            {'widget': AutoCompleteSelectWidget(lookup_class=DepartementLookup)}
+    }
+
     prepopulated_fields = {'username': ('first_name', 'last_name'), }
 
 

@@ -1,0 +1,8 @@
+{% extends "admin/base.html" %}
+{% load admin_static %}
+{% load selectable_tags %}
+
+{% block extrahead %}
+    {% include_ui_theme %}
+    {% include_jquery_libs %}
+{% endblock %}

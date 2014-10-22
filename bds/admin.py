@@ -5,7 +5,9 @@ from django.core.urlresolvers import reverse
 from bds.models import Sportif, Sport, UsersInSport, Event, UsersInEvent, \
                        EventOption
 from bds.filters import boolean_filter_factory
+from bds.forms import SportifAdminForm, SportAdminForm, SportifInEventAdminForm
 from profilENS.models import User
+
 
 def boolean(description=""):
     """
@@ -48,6 +50,8 @@ class SportifAdmin(admin.ModelAdmin):
 
     inlines = [SportsInline,]
 
+    form = SportifAdminForm
+
     for attr in ['phone', 'email', 'departement', 'occupation', 'cotisation']:
         locals()[attr] = lambda self, obj, attr=attr : getattr(obj.user, attr)
         attr_field = user_fields[attr]
@@ -77,6 +81,8 @@ class SportifAdmin(admin.ModelAdmin):
 class SportAdmin(admin.ModelAdmin):
     list_display = ('name', 'price', 'respo_name', 'cotisation_frequency')
 
+    form = SportAdminForm
+
     def respo_name(self, obj):
         respos = obj.respo.all()
         respos_urls = []
@@ -105,9 +111,7 @@ class UsersInEventAdmin(admin.ModelAdmin):
     list_display = ('user', 'event', 'payed')
     list_filter = ('event', 'payed')
 
-    #formfield_overrides = {
-    #        models.ManyToManyField: {'widget': CheckboxSelectMultiple},
-    #    }
+    form = SportifInEventAdminForm
 
 
 admin.site.register(Sportif, SportifAdmin)

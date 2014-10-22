@@ -1,23 +1,6 @@
-# -*- coding: utf-8 -*-
-
 from django import forms
 
 from profilENS.models import User
-
-class UserCreationForm(forms.ModelForm):
-
-    class Meta:
-        model = User
-        fields = ('first_name',
-                'last_name',
-                'username',
-                'email',
-                'phone',
-                'birthdate',
-                'departement',
-                'occupation',
-                'cotisation')
-
 
 class AddUserToBuroForm(forms.ModelForm):
     password1 = forms.CharField(label="Le mot magique",
@@ -34,4 +17,4 @@ class AddUserToBuroForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = []
+        fields = tuple()

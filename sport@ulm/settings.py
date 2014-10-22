@@ -18,6 +18,7 @@ SECRET_KEY = 'minimal'
 # Application definition
 INSTALLED_APPS = (
     'suit',
+    'selectable',
 )
 
 INSTALLED_APPS += (
