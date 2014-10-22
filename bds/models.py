@@ -33,7 +33,8 @@ class Sportif(models.Model):
     )
 
     user = models.OneToOneField(User, verbose_name="Utilisateur")
-    FFSU_number = models.CharField(max_length=50,
+    FFSU_number = models.CharField("Numéro FFSU",
+                                  max_length=50,
                                   blank=True,
                                   null=True)
     certificate_file = models.FileField("Certificat médical",
@@ -42,7 +43,8 @@ class Sportif(models.Model):
     sports = models.ManyToManyField(Sport,
                                     blank=True,
                                     through='UsersInSport')
-    ASPSL_number = models.CharField(max_length=50,
+    ASPSL_number = models.CharField("Numéro AS PSL",
+                                    max_length=50,
                                     blank=True,
                                     null=True)
     cotisation_period = models.CharField("Inscription",

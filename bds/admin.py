@@ -41,8 +41,10 @@ class SportifAdmin(admin.ModelAdmin):
     list_display = ('user', 'have_ffsu', 'is_AS_PSL', 'have_certificate',
                     'phone', 'email', 'departement', 'occupation',
                     'cotisation', 'respo')
-    list_filter = (boolean_filter_factory('have_ffsu'),
-                   boolean_filter_factory('have_certificate'))
+    list_filter = (boolean_filter_factory('have_certificate'),
+                   boolean_filter_factory('have_ffsu'),
+                   boolean_filter_factory("is_AS_PSL"),
+                   )
 
     inlines = [SportsInline,]
 
