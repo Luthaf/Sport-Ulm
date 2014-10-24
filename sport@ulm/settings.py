@@ -31,7 +31,7 @@ INSTALLED_APPS += (
 )
 
 INSTALLED_APPS += (
-    'commons',
+    'shared',
     'bds',
     'profilENS',
 )

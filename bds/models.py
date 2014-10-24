@@ -2,7 +2,7 @@
 from django.db import models
 
 from profilENS.models import User
-from commons.models import PlaceAndTime, EventPlaceAndTime
+from shared.models import TimeSlot, WeeklyTimeSlot
 
 COTIZ_FREQUENCY_CHOICES = (
     ("SEM", "Semestrielle"),
@@ -12,7 +12,7 @@ COTIZ_FREQUENCY_CHOICES = (
 
 class Sport(models.Model):
     name = models.CharField("Nom", max_length=50)
-    price = models.IntegerField(u"Cotisation (€)",
+    price = models.IntegerField("Cotisation (€)",
                                 blank=True,
                                 null=True)
     respo = models.ManyToManyField("Sportif", blank=True, null=True)
@@ -20,8 +20,6 @@ class Sport(models.Model):
                              default="ANN",
                              choices=COTIZ_FREQUENCY_CHOICES,
                              max_length=3)
-    locations = models.ManyToManyField(PlaceAndTime,
-                                       verbose_name="Dates et lieux")
 
     def __str__(self):
         if self.price:
@@ -29,6 +27,14 @@ class Sport(models.Model):
         else:
             rep = self.name
         return rep
+
+
+class SportTimeSlot(WeeklyTimeSlot):
+    sport = models.ForeignKey(Sport)
+
+    class Meta:
+        verbose_name = "Crénau"
+        verbose_name_plural = "Crénaux"
 
 
 class Sportif(models.Model):
@@ -90,14 +96,19 @@ class Event(models.Model):
                                    max_length=255,
                                    null=True,
                                    blank=True)
-    location = models.ManyToManyField(EventPlaceAndTime,
-                                      verbose_name="Dates et lieux")
 
     class Meta:
         verbose_name = "Évènement"
 
     def __str__(self):
         return self.name
+
+
+class EventTimeSlot(TimeSlot):
+    event = models.ForeignKey(Event)
+
+    class Meta:
+        verbose_name = "Localisation spatio-temporelle"
 
 
 class EventOption(models.Model):

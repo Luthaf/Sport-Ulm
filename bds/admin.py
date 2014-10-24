@@ -3,9 +3,10 @@ from django.contrib import admin
 from django.core.urlresolvers import reverse
 
 from bds.models import Sportif, Sport, UsersInSport, Event, UsersInEvent, \
-                       EventOption
+                       EventOption, SportTimeSlot, EventTimeSlot
 from bds.filters import boolean_filter_factory
 from bds.forms import SportifAdminForm, SportAdminForm, SportifInEventAdminForm
+
 from profilENS.models import User
 
 
@@ -48,6 +49,7 @@ class SportifAdmin(admin.ModelAdmin):
                    boolean_filter_factory("is_AS_PSL"),
                    )
 
+
     inlines = [SportsInline,]
 
     form = SportifAdminForm
@@ -74,10 +76,18 @@ class SportifAdmin(admin.ModelAdmin):
     respo.short_description = "Respo"
 
 
+class SportTimeSlotsInline(admin.TabularInline):
+    model = SportTimeSlot
+    extra = 1
+
+
 class SportAdmin(admin.ModelAdmin):
     list_display = ('name', 'price', 'respo_name', 'cotisation_frequency')
 
     form = SportAdminForm
+
+    inlines = [SportTimeSlotsInline, ]
+    exclude = ['time_slots']
 
     def respo_name(self, obj):
         respos = obj.respo.all()
@@ -92,12 +102,18 @@ class SportAdmin(admin.ModelAdmin):
 
 class EventOptionInline(admin.TabularInline):
     model = EventOption
+    extra = 0
+
+
+class EventTimeSlotsInline(admin.TabularInline):
+    model = EventTimeSlot
     extra = 1
+    max_num = 1
 
 
 class EventAdmin(admin.ModelAdmin):
     list_display = ('name', 'participants')
-    inlines = [EventOptionInline]
+    inlines = [EventOptionInline, EventTimeSlotsInline]
 
     def participants(self, obj):
         return obj.users.all().count()

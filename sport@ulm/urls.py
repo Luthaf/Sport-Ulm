@@ -5,7 +5,7 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    url(r'^', include("commons.urls")),
+    url(r'^', include("shared.urls")),
     url(r'^admin/', include(admin.site.urls)),
-    (r'^selectable/', include('selectable.urls')),
+    url(r'^selectable/', include('selectable.urls')),
 )
