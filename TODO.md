@@ -1,6 +1,6 @@
 ## Modules
 
-Ajouter [l'autocomplétion](http://django-autocomplete-light.readthedocs.org/en/latest/) et l'export en [CSV](https://github.com/fusionbox/django-separated).
+Ajouter l'export en [CSV](https://github.com/fusionbox/django-separated).
 
 ## Trucs en plus qui seraient cools
 
