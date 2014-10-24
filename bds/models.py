@@ -120,7 +120,7 @@ class EventOption(models.Model):
                                    max_length=255)
 
     class Meta:
-        verbose_name = "Prix d'évènement"
+        verbose_name = "Option"
 
     def __str__(self):
         return self.description
