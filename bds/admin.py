@@ -51,8 +51,9 @@ class SportifAdmin(admin.ModelAdmin):
 
 
     inlines = [SportsInline,]
-
     form = SportifAdminForm
+
+    search_fields = ['^user__first_name', '^user__last_name']
 
     for attr in ['phone', 'email', 'departement', 'occupation', 'cotisation']:
         locals()[attr] = lambda self, obj, attr=attr : getattr(obj.user, attr)
@@ -83,11 +84,12 @@ class SportTimeSlotsInline(admin.TabularInline):
 
 class SportAdmin(admin.ModelAdmin):
     list_display = ('name', 'price', 'cotisation_frequency', 'respo_name', "sportifs")
-
+    search_fields = ["^name"]
     form = SportAdminForm
 
     inlines = [SportTimeSlotsInline, ]
     exclude = ['time_slots']
+
 
     def respo_name(self, obj):
         respos = obj.respo.all()
@@ -116,6 +118,7 @@ class EventTimeSlotsInline(admin.TabularInline):
 
 class EventAdmin(admin.ModelAdmin):
     list_display = ('name', 'participants')
+    search_fields = ["^name"]
     inlines = [EventOptionInline, EventTimeSlotsInline]
 
     def participants(self, obj):
@@ -124,7 +127,10 @@ class EventAdmin(admin.ModelAdmin):
 
 class UsersInEventAdmin(admin.ModelAdmin):
     list_display = ('user', 'event', 'payed')
-    list_filter = ('event', 'payed')
+    list_filter = ('event__name', 'payed')
+    search_fields = ["^event__name",
+                     "^user__user__first_name",
+                     "^user__user__last_name"]
 
     form = SportifInEventAdminForm
 
