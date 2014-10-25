@@ -64,11 +64,11 @@ class SportifAdmin(admin.ModelAdmin):
 
     @boolean(description="n° FFSU")
     def have_ffsu(self, obj):
-        return obj.FFSU_number != ""
+        return obj.FFSU_number != None and obj.FFSU_number != ""
 
     @boolean(description="AS PSL")
     def is_AS_PSL(self, obj):
-        return obj.ASPSL_number != ""
+        return obj.ASPSL_number != None and obj.ASPSL_number != ""
 
     def respo(self, obj):
         '''Show the sports this sportif is respo'''

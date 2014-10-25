@@ -17,9 +17,11 @@ class Sport(models.Model):
                                 null=True)
     respo = models.ManyToManyField("Sportif", blank=True, null=True)
     cotisation_frequency = models.CharField("Fréquence de la cotisation",
-                             default="ANN",
-                             choices=COTIZ_FREQUENCY_CHOICES,
-                             max_length=3)
+                                            default="ANN",
+                                            choices=COTIZ_FREQUENCY_CHOICES,
+                                            max_length=3,
+                                            null=True,
+                                            blank=True)
 
     def __str__(self):
         if self.price:
