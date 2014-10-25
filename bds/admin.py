@@ -82,7 +82,7 @@ class SportTimeSlotsInline(admin.TabularInline):
 
 
 class SportAdmin(admin.ModelAdmin):
-    list_display = ('name', 'price', 'respo_name', 'cotisation_frequency')
+    list_display = ('name', 'price', 'cotisation_frequency', 'respo_name', "sportifs")
 
     form = SportAdminForm
 
@@ -98,6 +98,9 @@ class SportAdmin(admin.ModelAdmin):
         return "\n".join(respos_urls)
     respo_name.short_description = "Respo(s)"
     respo_name.allow_tags = True
+
+    def sportifs(self, obj):
+        return obj.sportif_set.count()
 
 
 class EventOptionInline(admin.TabularInline):
