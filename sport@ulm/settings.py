@@ -70,13 +70,20 @@ TEMPLATE_DIRS = (
 SUIT_CONFIG = {
     'ADMIN_NAME': 'Sport@Ulm',
     'SEARCH_URL': '',
+    'MENU_ICONS': {
+            'auth': 'icon-lock',
+
+            'bds': 'icon-basketball',
+            'profilENS': "icon-user",
+    }
 }
 
 LANGUAGE_CODE = 'fr-FR'
-
 TIME_ZONE = 'Europe/Paris'
-
 USE_TZ = True
+
+STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 try:
     from .local_settings import *

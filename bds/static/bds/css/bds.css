@@ -1,0 +1,8 @@
+.icon-basketball {
+    background-image: url("/static/bds/img/basketball.png");
+    background-position: center center;
+}
+
+.left-nav > ul > li.active > a .icon-basketball {
+    background-image: url("/static/bds/img/basketball.png");
+}
