@@ -19,6 +19,9 @@ class UserAdmin(admin.ModelAdmin):
     list_display = ('user', 'phone', 'email', 'departement',
                     'occupation', 'cotisation', 'user_group', 'is_staff')
     list_filter = ('occupation', 'cotisation', 'departement', 'is_staff')
+
+    search_fields = ['^first_name', '^last_name']
+
     fieldsets = (
             (None, {
                  'fields': ('first_name',
