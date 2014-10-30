@@ -49,19 +49,10 @@ class SportifAdmin(admin.ModelAdmin):
                    boolean_filter_factory("is_AS_PSL"),
                    )
 
-
     inlines = [SportsInline,]
     form = SportifAdminForm
 
     search_fields = ['^user__first_name', '^user__last_name']
-
-    for attr in ['phone', 'email', 'departement', 'occupation', 'cotisation']:
-        locals()[attr] = lambda self, obj, attr=attr : getattr(obj.user, attr)
-        attr_field = user_fields[attr]
-        try:
-            locals()[attr].short_description = attr_field.verbose_name
-        except AttributeError:
-            locals()[attr].short_description = attr
 
     @boolean(description="n° FFSU")
     def have_ffsu(self, obj):

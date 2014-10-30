@@ -75,6 +75,26 @@ class Sportif(models.Model):
     def __str__(self):
         return str(self.user)
 
+    @property
+    def departement(self):
+        return self.user.departement
+
+    @property
+    def phone(self):
+        return self.user.phone
+
+    @property
+    def email(self):
+        return self.user.email
+
+    @property
+    def occupation(self):
+        return self.user.occupation
+
+    @property
+    def cotisation(self):
+        return self.user.cotisation
+
 
 class UsersInSport(models.Model):
     user = models.ForeignKey(Sportif, verbose_name="Sportif")
