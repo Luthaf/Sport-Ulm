@@ -114,8 +114,7 @@ class Event(models.Model):
     users = models.ManyToManyField(Sportif,
                                    blank=True,
                                    through='UsersInEvent')
-    description = models.CharField("description",
-                                   max_length=255,
+    description = models.TextField("description",
                                    null=True,
                                    blank=True)
 
