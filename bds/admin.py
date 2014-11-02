@@ -49,6 +49,8 @@ class SportifAdmin(admin.ModelAdmin):
                    boolean_filter_factory("is_AS_PSL"),
                    )
 
+    ordering = ['user__last_name', 'user__first_name']
+
     inlines = [SportsInline,]
     form = SportifAdminForm
 
@@ -77,6 +79,7 @@ class SportAdmin(admin.ModelAdmin):
     list_display = ('name', 'price', 'cotisation_frequency', 'respo_name', "sportifs")
     search_fields = ["^name"]
     form = SportAdminForm
+    ordering = ["name"]
 
     inlines = [SportTimeSlotsInline, ]
     exclude = ['time_slots']
@@ -122,6 +125,7 @@ class UsersInEventAdmin(admin.ModelAdmin):
     search_fields = ["^event__name",
                      "^user__user__first_name",
                      "^user__user__last_name"]
+    ordering = ["event__name", "user__user__last_name", "user__user__first_name"]
 
     form = SportifInEventAdminForm
 

@@ -21,6 +21,7 @@ class UserAdmin(admin.ModelAdmin):
     list_filter = ('occupation', 'cotisation', 'departement', 'is_staff')
 
     search_fields = ['^first_name', '^last_name']
+    ordering = ['last_name', 'first_name']
 
     fieldsets = (
             (None, {
