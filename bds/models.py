@@ -5,14 +5,17 @@ from profilENS.models import User
 from shared.models import TimeSlot, WeeklyTimeSlot
 
 COTIZ_FREQUENCY_CHOICES = (
-    ("SEM", "Semestrielle"),
-    ("ANN", "Annuelle")
+    ("SEM", "semestre"),
+    ("ANN", "année"),
+    ("COU", "cours")
 )
 
 
 class Sport(models.Model):
     name = models.CharField("Nom", max_length=50)
-    price = models.IntegerField("Cotisation (€)",
+    price = models.DecimalField("Cotisation (€)",
+                                decimal_places=2,
+                                max_digits=5,
                                 blank=True,
                                 null=True)
     respo = models.ManyToManyField("Sportif", blank=True, null=True)
@@ -25,7 +28,7 @@ class Sport(models.Model):
 
     def __str__(self):
         if self.price:
-            rep = self.name + ' ( ' + str(self.price) + ' € )'
+            rep = self.name + ' ( ' + str(self.price) + ' € par ' + str(self.cotisation_frequency)+ ')'
         else:
             rep = self.name
         return rep
