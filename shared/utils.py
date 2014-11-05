@@ -1,5 +1,15 @@
 from django.http import HttpResponse
 
+def get_model_fields(model):
+    ''' Returns all the fields of a model'''
+    fields = {}
+    options = model._meta
+    for field in sorted(options.concrete_fields + \
+                        options.many_to_many + \
+                        options.virtual_fields):
+        fields[field.name] = field
+    return fields
+
 def export_as_csv(request, queryset):
         ''' Export all the columns as CSV'''
         
@@ -9,7 +19,6 @@ def export_as_csv(request, queryset):
         response['Content-Disposition'] = 'attachment; filename="report.csv"'
         
         writer = csv.writer(response, dialect="excel")
-        # TODO: get the header dynamically
         writer.writerow(["Utilisateur", "Téléphone", "Occupation",
                          "Département", "Cotisation",
                          "Date de naissance"])
