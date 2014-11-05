@@ -10,7 +10,7 @@ from bds.forms import SportifAdminForm, SportAdminForm, SportifInEventAdminForm
 from profilENS.models import User
 
 from shared.utils import get_model_fields
-
+from shared.export import CSVExport
 
 def boolean(description=""):
     """
@@ -33,7 +33,7 @@ class SportsInline(admin.TabularInline):
     extra = 0
 
 
-class SportifAdmin(admin.ModelAdmin):
+class SportifAdmin(CSVExport, admin.ModelAdmin):
     list_display = ('user', 'have_ffsu', 'is_AS_PSL', 'have_certificate',
                     'phone', 'email', 'departement', 'occupation',
                     'cotisation', 'respo')

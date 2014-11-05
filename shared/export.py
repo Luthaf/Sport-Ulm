@@ -1,35 +1,82 @@
-from django.http import HttpResponse
+from django.contrib import admin
 
-def get_model_fields(model):
-    ''' Returns all the fields of a model'''
-    fields = {}
-    options = model._meta
-    for field in sorted(options.concrete_fields + \
-                        options.many_to_many + \
-                        options.virtual_fields):
-        fields[field.name] = field
-    return fields
+from django.db.models.fields import FieldDoesNotExist
 
 
-def export_as_csv(modeladmin, request, queryset):
-        ''' Export all the columns as CSV'''
+class FieldNotFound(Exception):
+    pass
 
+
+class CSVExport(admin.ModelAdmin):
+    """
+    Adds a CSV export action to an admin view.
+    """
+
+    # This is the maximum number of records that will be written.
+    # Exporting massive numbers of records should be done asynchronously.
+    csv_record_limit = 1000
+
+    def get_actions(self, request):
+        actions = self.actions if hasattr(self, 'actions') else []
+        actions.append('csv_export')
+        actions = super(CSVExport, self).get_actions(request)
+        return actions
+
+    def csv_export(self, request, queryset=None, *args, **kwargs):
         import csv
-        users = queryset
+        from django.http import HttpResponse
+        from django.template.defaultfilters import slugify
+
         response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename="report.csv"'
+        response['Content-Disposition'] = 'attachment; filename={}.csv'.format(
+                                                    slugify(self.model.__name__)
+                                                    )
+        headers = list(self.list_display)
+        writer = csv.DictWriter(response, headers)
 
-        writer = csv.writer(response, dialect="excel")
-        writer.writerow(["Utilisateur", "Téléphone", "Occupation",
-                         "Département", "Cotisation",
-                         "Date de naissance"])
-        for user in users:
-            writer.writerow([user, user.phone, user.occupation,
-                             user.departement, user.cotisation,
-                             user.birthdate])
+        # Write header.
+        header_data = {}
+        for name in headers:
+            if hasattr(self, name) \
+            and hasattr(getattr(self, name), 'short_description'):
+                header_data[name] = getattr(
+                    getattr(self, name), 'short_description')
+            else:
+                field = None
+                try:
+                    field = self.model._meta.get_field_by_name(name)
+                except FieldDoesNotExist:
+                    field = getattr(self.model, name)
 
+                # This is the case for normal fields, but not properties
+                # or OneToOne.
+                if isinstance(field, tuple):
+                    field = field[0]
+
+                if field and hasattr(field, 'verbose_name'):
+                    header_data[name] = field.verbose_name
+                else:
+                    header_data[name] = name
+            header_data[name] = header_data[name].title()
+        writer.writerow(header_data)
+
+        # Write records.
+        for instance in queryset[:self.csv_record_limit]:
+            data = {}
+            for name in headers:
+                if hasattr(instance, name):
+                    data[name] = getattr(instance, name)
+                elif hasattr(self, name):
+                    data[name] = getattr(self, name)(instance)
+                else:
+                    raise FieldNotFound('Unknown field: {}'.format(name))
+
+                if callable(data[name]):
+                    data[name] = data[name]()
+            writer.writerow(data)
         return response
-export_as_csv.short_description = "Exporter la selection au format csv"
+    csv_export.short_description = 'Exporter la sélection au format CSV'
+
 
 def export_as_tex(modeladmin, request, queryset):
     ''' Export all the columns as tex'''

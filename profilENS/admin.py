@@ -12,11 +12,11 @@ from selectable.forms.widgets import AutoCompleteSelectWidget
 from profilENS.lookups import DepartementLookup
 from profilENS.models import Departement, User
 from profilENS.views import AddUserToBuro
-from shared.export import export_as_pdf, export_as_csv, export_as_tex
+from shared.export import export_as_pdf, export_as_tex, CSVExport
 
-class UserAdmin(admin.ModelAdmin):
+class UserAdmin(CSVExport, admin.ModelAdmin):
 
-    actions = ['add_to_buro', export_as_csv, export_as_pdf, export_as_tex]
+    actions = ['add_to_buro', export_as_pdf, export_as_tex]
     list_display = ('user', 'phone', 'email', 'departement',
                     'occupation', 'cotisation', 'user_group', 'is_staff')
     list_filter = ('occupation', 'cotisation', 'departement', 'is_staff')
