@@ -1,117 +1,201 @@
-<<<<<<< HEAD:shared/export.py
+from django.contrib import admin
+from django.db.models.fields import FieldDoesNotExist
+from django.template.defaultfilters import slugify
 from django.http import HttpResponse
 
-def export_as_csv(modeladmin, request, queryset):
-        ''' Export all the columns as CSV'''
 
+class FieldNotFound(Exception):
+    pass
+
+
+class HeaderDataMixin(admin.ModelAdmin):
+
+    def get_header_data(self, headers):
+        '''
+        Get the headers verbose name from the header list
+        '''
+        header_data = {}
+        for name in headers:
+            if hasattr(self, name) \
+            and hasattr(getattr(self, name), 'short_description'):
+                header_data[name] = getattr(
+                    getattr(self, name), 'short_description')
+            else:
+                field = None
+                try:
+                    field = self.model._meta.get_field_by_name(name)
+                except FieldDoesNotExist:
+                    field = getattr(self.model, name)
+
+                # This is the case for normal fields, but not properties
+                # or OneToOne.
+                if isinstance(field, tuple):
+                    field = field[0]
+
+                if field and hasattr(field, 'verbose_name'):
+                    header_data[name] = field.verbose_name
+                else:
+                    header_data[name] = name
+            header_data[name] = header_data[name].title()
+        return header_data
+
+    def get_instance_data(self, headers, instance):
+        '''
+        Get the data corresponding to the header list in the instance
+        '''
+        data = {}
+        for name in headers:
+            if hasattr(instance, name):
+                data[name] = getattr(instance, name)
+            elif hasattr(self, name):
+                data[name] = getattr(self, name)(instance)
+            else:
+                raise FieldNotFound('Unknown field: {}'.format(name))
+
+            if callable(data[name]):
+                data[name] = data[name]()
+        return data
+
+
+class CSVExport(HeaderDataMixin, admin.ModelAdmin):
+    """
+    Adds a CSV export action to an admin view.
+    """
+
+    # This is the maximum number of records that will be written.
+    # Exporting massive numbers of records should be done asynchronously.
+    csv_record_limit = 1000
+
+    def get_actions(self, request):
+        actions = self.actions if hasattr(self, 'actions') else []
+        actions.append('csv_export')
+        actions = super(CSVExport, self).get_actions(request)
+        return actions
+
+    def csv_export(self, request, queryset=None, *args, **kwargs):
         import csv
-        users = queryset
+
         response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename="report.csv"'
+        response['Content-Disposition'] = 'attachment; filename={}.csv'.format(
+                                                    slugify(self.model.__name__)
+                                                    )
+        headers = list(self.list_display)
+        writer = csv.DictWriter(response, headers)
 
-        writer = csv.writer(response, dialect="excel")
-        # TODO: get the header dynamically
-        writer.writerow(["Utilisateur", "Téléphone", "Occupation",
-                         "Département", "Cotisation",
-                         "Date de naissance"])
-        for user in users:
-            writer.writerow([user, user.phone, user.occupation,
-                             user.departement, user.cotisation,
-                             user.birthdate])
+        writer.writerow(self.get_header_data(headers))
 
+        # Write records.
+        for instance in queryset[:self.csv_record_limit]:
+            writer.writerow(self.get_instance_data(headers, instance))
         return response
-export_as_csv.short_description = "Exporter la selection au format csv"
+    csv_export.short_description = 'Exporter la sélection au format CSV'
 
-def export_as_tex(modeladmin, request, queryset):
-    ''' Export all the columns as tex'''
-    # TODO: what to do if array too long ?
-    users = queryset
-    response = HttpResponse(content_type='text/tex')
-    response['Content-Disposition'] = 'attachment; filename="report.tex"'
 
-    from io import StringIO
-    buffer = StringIO()
-    buffer.write("\\documentclass{report}\n\n")
-    buffer.write("\\usepackage[utf8]{inputenc}\n\\usepackage[T1]{fontenc}\n")
-    buffer.write("\\begin{document}\n")
-    buffer.write("\\begin{tabular}{l|l|l|l|l|l}\n\t\n")
-    sep = " & "
-    buffer.write("\t"+sep.join(["Utilisateur", "Téléphone", "Occupation",
-                                "Département", "Cotisation",
-                                "Date de naissance"]) + "\\\\\\hline\n")
-    buffer.write("\t"+
-                 "\\\\\n\t".join(
-                     [sep.join([str(user), str(user.phone),
-                                str(user.occupation), str(user.departement),
-                                str(user.cotisation),str(user.birthdate)])
-                      for user in users])
-                 + "\n")
-    buffer.write("\\end{tabular}\n")
-    buffer.write("\\end{document}")
-    response.write(buffer.getvalue())
+class LaTeXExport(HeaderDataMixin, admin.ModelAdmin):
+        """
+        Adds a LaTeX export action to an admin view.
+        """
 
-    return response
-export_as_tex.short_description = "Exporter la selection au format LaTeX"
+        # This is the maximum number of records that will be written.
+        # Exporting massive numbers of records should be done asynchronously.
+        tex_record_limit = 1000
 
-def export_as_pdf(modeladmin, request, queryset):
-    """Returns PDF as a binary stream."""
-    # TODO: count number of pages
-    # TODO: add user id
-    from io import BytesIO
-    from reportlab.pdfgen import canvas
-    from reportlab.lib.pagesizes import A4
-    from reportlab.lib import colors
-    from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
-    from reportlab.platypus import Paragraph, Spacer
-    from reportlab.lib.styles import getSampleStyleSheet
+        def get_actions(self, request):
+            actions = self.actions if hasattr(self, 'actions') else []
+            actions.append('tex_export')
+            actions = super(LaTeXExport, self).get_actions(request)
+            return actions
 
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="report.pdf"'
-    
-    buffer = BytesIO()
-    doc = SimpleDocTemplate(buffer, pagesize=A4)
-    elements = []
-    styles=getSampleStyleSheet()
+        def tex_export(self, request, queryset=None, *args, **kwargs):
+            from django.template.loader import render_to_string
+            response = HttpResponse(content_type='text/tex')
+            response['Content-Disposition'] = 'attachment; filename={}.tex'.format(
+                                                        slugify(self.model.__name__)
+                                                        )
+            headers = list(self.list_display)
 
-    # TODO: Add the filters applied to the view. For example:
-    # # Prints the filters applied :
-    # p = Paragraph("Filters: ", styles["Normal"])
-    # elements.append(p)
+            context = {}
+            context["headers"] = [ head for head in
+                                        self.get_header_data(headers).values()]
+            context["data"] = []
 
-    # for key, val in request.GET.items():
-    #     p = Paragraph(key+": "+val, styles["Normal"])
-    #     elements.append(p)
+            for instance in queryset[:self.tex_record_limit]:
+                context["data"].append([ head for head in
+                            self.get_instance_data(headers, instance).values()]
+                            )
 
-    # Add some space
-    elements.append(Spacer(1, 12))
+            response.write(render_to_string('export/table.tex', context))
 
-    # TODO: get the header dynamically
-    data = [["Utilisateur", "Téléphone", "Occupation",
-             "Département", "Cotisation",
-             "Date de naissance"]]
-    data += [ [user, user.phone, user.occupation,
-               user.departement, user.cotisation,
-               user.birthdate] for user in queryset ]
-    alternating_color = [('BACKGROUND', (0,2*n+1), (-1,2*n+1),
-                          colors.lightgrey)
-                         for n in range(len(data)//2)]
-    t = Table(data, style=[('LINEAFTER', (0,0), (-2, -1), 2, colors.grey),
-                           ('LINEBELOW', (0,0), (-1, 0), 2, colors.grey)]
-              +alternating_color)
-    elements.append(t)
-    doc.build(elements)
-    response.write(buffer.getvalue())
-    buffer.close()
-    return response
-export_as_pdf.short_description = "Exporter la selection au format PDF"
-=======
-def get_model_fields(model):
-    ''' Returns all the fields of a model'''
-    fields = {}
-    options = model._meta
-    for field in sorted(options.concrete_fields + \
-                        options.many_to_many + \
-                        options.virtual_fields):
-        fields[field.name] = field
-    return fields
->>>>>>> 836ebfeb5e5f6291c576d18d235124fab8196ece:shared/utils.py
+            return response
+        tex_export.short_description = 'Exporter la sélection au format LaTeX'
+
+
+class PDFExport(HeaderDataMixin, admin.ModelAdmin):
+        """
+        Adds a pdf export action to an admin view.
+        """
+
+        # This is the maximum number of records that will be written.
+        # Exporting massive numbers of records should be done asynchronously.
+        pdf_record_limit = 1000
+
+        def get_actions(self, request):
+            actions = self.actions if hasattr(self, 'actions') else []
+            actions.append('pdf_export')
+            actions = super(PDFExport, self).get_actions(request)
+            return actions
+
+        def pdf_export(self, request, queryset=None, *args, **kwargs):
+            from io import BytesIO
+            from reportlab.pdfgen import canvas
+            from reportlab.lib import colors, pagesizes, styles
+            from reportlab.platypus import (SimpleDocTemplate, Table, TableStyle,
+                                            Paragraph, Spacer)
+
+            response = HttpResponse(content_type='application/pdf')
+            response['Content-Disposition'] = 'attachment; filename={}.pdf'.format(
+                                                        slugify(self.model.__name__)
+                                                        )
+            headers = list(self.list_display)
+
+            buff = BytesIO()
+            document = SimpleDocTemplate(buff, pagesize=pagesizes.A4)
+            elements = []
+            styles = styles.getSampleStyleSheet()
+
+            # TODO: Add the filters applied to the view. For example:
+            # # Prints the filters applied :
+            # p = Paragraph("Filters: ", styles["Normal"])
+            # elements.append(p)
+
+            # for key, val in request.GET.items():
+            #     p = Paragraph(key+": "+val, styles["Normal"])
+            #     elements.append(p)
+
+            # Add some space
+            elements.append(Spacer(1, 12))
+
+            table_data = [[ val for val in self.get_header_data(headers).values()]]
+
+            for instance in queryset[:self.pdf_record_limit]:
+                table_data += [[ val for val in
+                            self.get_instance_data(headers, instance).values()
+                              ]]
+
+            alternating_color = [('BACKGROUND', (0,2*n+1), (-1,2*n+1),
+                                  colors.lightgrey)
+                                 for n in range(len(table_data)//2)]
+            table = Table(table_data,
+                        style=[('LINEAFTER', (0, 0), (-2, -1), 2, colors.grey),
+                               ('LINEBELOW', (0, 0), (-1, 0), 2, colors.grey)
+                               ] + alternating_color)
+            elements.append(table)
+            document.build(elements)
+
+            response.write(buff.getvalue())
+            buff.close()
+            return response
+        pdf_export.short_description = 'Exporter la sélection au format PDF'
+
+class ExportMixin(CSVExport, PDFExport):
+    pass
