@@ -15,7 +15,7 @@ from profilENS.views import AddUserToBuro
 
 class UserAdmin(admin.ModelAdmin):
 
-    actions = ['add_to_buro', 'export_as_csv', 'export_as_pdf']
+    actions = ['add_to_buro', 'export_as_csv', 'export_as_pdf', 'export_as_tex']
     list_display = ('user', 'phone', 'email', 'departement',
                     'occupation', 'cotisation', 'user_group', 'is_staff')
     list_filter = ('occupation', 'cotisation', 'departement', 'is_staff')
@@ -77,7 +77,7 @@ class UserAdmin(admin.ModelAdmin):
         import csv
         users = queryset
         response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename="file.csv"'
+        response['Content-Disposition'] = 'attachment; filename="report.csv"'
         
         writer = csv.writer(response, dialect="excel")
         # TODO: get the header dynamically
@@ -92,6 +92,38 @@ class UserAdmin(admin.ModelAdmin):
         return response
     
     export_as_csv.short_description = "Exporter la selection au format csv"
+    
+    def export_as_tex(self, request, queryset):
+        ''' Export all the columns as tex'''
+        # TODO: what to do if array too long ?
+        users = queryset
+        response = HttpResponse(content_type='text/tex')
+        response['Content-Disposition'] = 'attachment; filename="report.tex"'
+        
+        from io import StringIO
+        buffer = StringIO()
+        buffer.write("\\documentclass{report}\n\n")
+        buffer.write("\\usepackage[utf8]{inputenc}\n\\usepackage[T1]{fontenc}\n")
+        buffer.write("\\begin{document}\n")
+        buffer.write("\\begin{tabular}{l|l|l|l|l|l}\n\t\n")
+        sep = " & "
+        buffer.write("\t"+sep.join(["Utilisateur", "Téléphone", "Occupation",
+                                    "Département", "Cotisation",
+                                    "Date de naissance"]) + "\\\\\\hline\n")
+        buffer.write("\t"+
+                     "\\\\\n\t".join(
+                         [sep.join([str(user), str(user.phone),
+                                    str(user.occupation), str(user.departement),
+                                    str(user.cotisation),str(user.birthdate)])
+                          for user in users])
+                     + "\n")
+        buffer.write("\\end{tabular}\n")
+        buffer.write("\\end{document}")        
+        response.write(buffer.getvalue())
+
+        return response
+    
+    export_as_tex.short_description = "Exporter la selection au format tex"
 
       
     def export_as_pdf(self, request, queryset):  
@@ -107,7 +139,7 @@ class UserAdmin(admin.ModelAdmin):
         from reportlab.lib.styles import getSampleStyleSheet
 
         response = HttpResponse(content_type='application/pdf')
-        response['Content-Disposition'] = 'attachment; filename="file.pdf"'
+        response['Content-Disposition'] = 'attachment; filename="report.pdf"'
         
         buffer = BytesIO()
         doc = SimpleDocTemplate(buffer, pagesize=A4)
@@ -144,6 +176,8 @@ class UserAdmin(admin.ModelAdmin):
         response.write(buffer.getvalue())
         buffer.close()
         return response
+    
+    export_as_pdf.short_description = "Exporter la selection au format pdf"
 
     def get_urls(self):
         urls = super(UserAdmin, self).get_urls()
