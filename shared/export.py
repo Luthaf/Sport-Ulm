@@ -122,54 +122,73 @@ def export_as_tex(modeladmin, request, queryset):
     return response
 export_as_tex.short_description = "Exporter la selection au format LaTeX"
 
-def export_as_pdf(modeladmin, request, queryset):
-    """Returns PDF as a binary stream."""
-    # TODO: count number of pages
-    # TODO: add user id
-    from io import BytesIO
-    from reportlab.pdfgen import canvas
-    from reportlab.lib.pagesizes import A4
-    from reportlab.lib import colors
-    from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
-    from reportlab.platypus import Paragraph, Spacer
-    from reportlab.lib.styles import getSampleStyleSheet
 
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="report.pdf"'
+class PDFExport(HeaderDataMixin, admin.ModelAdmin):
+        """
+        Adds a pdf export action to an admin view.
+        """
 
-    buffer = BytesIO()
-    doc = SimpleDocTemplate(buffer, pagesize=A4)
-    elements = []
-    styles=getSampleStyleSheet()
+        # This is the maximum number of records that will be written.
+        # Exporting massive numbers of records should be done asynchronously.
+        pdf_record_limit = 1000
 
-    # TODO: Add the filters applied to the view. For example:
-    # # Prints the filters applied :
-    # p = Paragraph("Filters: ", styles["Normal"])
-    # elements.append(p)
+        def get_actions(self, request):
+            actions = self.actions if hasattr(self, 'actions') else []
+            actions.append('pdf_export')
+            actions = super(PDFExport, self).get_actions(request)
+            return actions
 
-    # for key, val in request.GET.items():
-    #     p = Paragraph(key+": "+val, styles["Normal"])
-    #     elements.append(p)
+        def pdf_export(self, request, queryset=None, *args, **kwargs):
+            from io import BytesIO
+            from reportlab.pdfgen import canvas
+            from reportlab.lib import colors, pagesizes, styles
+            from reportlab.platypus import (SimpleDocTemplate, Table, TableStyle,
+                                            Paragraph, Spacer)
 
-    # Add some space
-    elements.append(Spacer(1, 12))
+            response = HttpResponse(content_type='application/pdf')
+            response['Content-Disposition'] = 'attachment; filename={}.pdf'.format(
+                                                        slugify(self.model.__name__)
+                                                        )
+            headers = list(self.list_display)
 
-    # TODO: get the header dynamically
-    data = [["Utilisateur", "Téléphone", "Occupation",
-             "Département", "Cotisation",
-             "Date de naissance"]]
-    data += [ [user, user.phone, user.occupation,
-               user.departement, user.cotisation,
-               user.birthdate] for user in queryset ]
-    alternating_color = [('BACKGROUND', (0,2*n+1), (-1,2*n+1),
-                          colors.lightgrey)
-                         for n in range(len(data)//2)]
-    t = Table(data, style=[('LINEAFTER', (0,0), (-2, -1), 2, colors.grey),
-                           ('LINEBELOW', (0,0), (-1, 0), 2, colors.grey)]
-              +alternating_color)
-    elements.append(t)
-    doc.build(elements)
-    response.write(buffer.getvalue())
-    buffer.close()
-    return response
-export_as_pdf.short_description = "Exporter la selection au format PDF"
+            buff = BytesIO()
+            document = SimpleDocTemplate(buff, pagesize=pagesizes.A4)
+            elements = []
+            styles = styles.getSampleStyleSheet()
+
+            # TODO: Add the filters applied to the view. For example:
+            # # Prints the filters applied :
+            # p = Paragraph("Filters: ", styles["Normal"])
+            # elements.append(p)
+
+            # for key, val in request.GET.items():
+            #     p = Paragraph(key+": "+val, styles["Normal"])
+            #     elements.append(p)
+
+            # Add some space
+            elements.append(Spacer(1, 12))
+
+            table_data = [[ val for val in self.get_header_data(headers).values()]]
+
+            for instance in queryset[:self.pdf_record_limit]:
+                table_data += [[ val for val in
+                            self.get_instance_data(headers, instance).values()
+                              ]]
+
+            alternating_color = [('BACKGROUND', (0,2*n+1), (-1,2*n+1),
+                                  colors.lightgrey)
+                                 for n in range(len(table_data)//2)]
+            table = Table(table_data,
+                        style=[('LINEAFTER', (0, 0), (-2, -1), 2, colors.grey),
+                               ('LINEBELOW', (0, 0), (-1, 0), 2, colors.grey)
+                               ] + alternating_color)
+            elements.append(table)
+            document.build(elements)
+
+            response.write(buff.getvalue())
+            buff.close()
+            return response
+        pdf_export.short_description = 'Exporter la sélection au format PDF'
+
+class ExportMixin(CSVExport, PDFExport):
+    pass
