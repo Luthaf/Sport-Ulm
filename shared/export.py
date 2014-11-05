@@ -1,40 +1,19 @@
 from django.contrib import admin
-
 from django.db.models.fields import FieldDoesNotExist
+from django.template.defaultfilters import slugify
+from django.http import HttpResponse
 
 
 class FieldNotFound(Exception):
     pass
 
 
-class CSVExport(admin.ModelAdmin):
-    """
-    Adds a CSV export action to an admin view.
-    """
+class HeaderDataMixin(admin.ModelAdmin):
 
-    # This is the maximum number of records that will be written.
-    # Exporting massive numbers of records should be done asynchronously.
-    csv_record_limit = 1000
-
-    def get_actions(self, request):
-        actions = self.actions if hasattr(self, 'actions') else []
-        actions.append('csv_export')
-        actions = super(CSVExport, self).get_actions(request)
-        return actions
-
-    def csv_export(self, request, queryset=None, *args, **kwargs):
-        import csv
-        from django.http import HttpResponse
-        from django.template.defaultfilters import slugify
-
-        response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename={}.csv'.format(
-                                                    slugify(self.model.__name__)
-                                                    )
-        headers = list(self.list_display)
-        writer = csv.DictWriter(response, headers)
-
-        # Write header.
+    def get_header_data(self, headers):
+        '''
+        Get the headers verbose name from the header list
+        '''
         header_data = {}
         for name in headers:
             if hasattr(self, name) \
@@ -58,22 +37,56 @@ class CSVExport(admin.ModelAdmin):
                 else:
                     header_data[name] = name
             header_data[name] = header_data[name].title()
-        writer.writerow(header_data)
+        return header_data
+
+    def get_instance_data(self, headers, instance):
+        '''
+        Get the data corresponding to the header list in the instance
+        '''
+        data = {}
+        for name in headers:
+            if hasattr(instance, name):
+                data[name] = getattr(instance, name)
+            elif hasattr(self, name):
+                data[name] = getattr(self, name)(instance)
+            else:
+                raise FieldNotFound('Unknown field: {}'.format(name))
+
+            if callable(data[name]):
+                data[name] = data[name]()
+        return data
+
+
+class CSVExport(HeaderDataMixin, admin.ModelAdmin):
+    """
+    Adds a CSV export action to an admin view.
+    """
+
+    # This is the maximum number of records that will be written.
+    # Exporting massive numbers of records should be done asynchronously.
+    csv_record_limit = 1000
+
+    def get_actions(self, request):
+        actions = self.actions if hasattr(self, 'actions') else []
+        actions.append('csv_export')
+        actions = super(CSVExport, self).get_actions(request)
+        return actions
+
+    def csv_export(self, request, queryset=None, *args, **kwargs):
+        import csv
+
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename={}.csv'.format(
+                                                    slugify(self.model.__name__)
+                                                    )
+        headers = list(self.list_display)
+        writer = csv.DictWriter(response, headers)
+
+        writer.writerow(self.get_header_data(headers))
 
         # Write records.
         for instance in queryset[:self.csv_record_limit]:
-            data = {}
-            for name in headers:
-                if hasattr(instance, name):
-                    data[name] = getattr(instance, name)
-                elif hasattr(self, name):
-                    data[name] = getattr(self, name)(instance)
-                else:
-                    raise FieldNotFound('Unknown field: {}'.format(name))
-
-                if callable(data[name]):
-                    data[name] = data[name]()
-            writer.writerow(data)
+            writer.writerow(self.get_instance_data(headers, instance))
         return response
     csv_export.short_description = 'Exporter la sélection au format CSV'
 
