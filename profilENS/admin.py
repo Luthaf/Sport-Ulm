@@ -82,7 +82,7 @@ class UserAdmin(admin.ModelAdmin):
         writer = csv.writer(response, dialect="excel")
         # TODO: get the header dynamically
         writer.writerow(["Utilisateur", "Téléphone", "Occupation",
-                         "Déparement", "Cotisation",
+                         "Département", "Cotisation",
                          "Date de naissance"])
         for user in users:
             writer.writerow([user, user.phone, user.occupation,
@@ -101,6 +101,8 @@ class UserAdmin(admin.ModelAdmin):
         from reportlab.lib.pagesizes import A4
         from reportlab.lib import colors
         from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
+        from reportlab.platypus import Paragraph, Spacer
+        from reportlab.lib.styles import getSampleStyleSheet
 
         response = HttpResponse(content_type='application/pdf')
         response['Content-Disposition'] = 'attachment; filename="file.pdf"'
@@ -108,10 +110,30 @@ class UserAdmin(admin.ModelAdmin):
         buffer = BytesIO()
         doc = SimpleDocTemplate(buffer, pagesize=A4)
         elements = []
-        data = [ [user, user.phone, user.occupation,
+        styles=getSampleStyleSheet()
+
+        # TODO: Add the filters applied to the view. For example:
+        # # Prints the filters applied :
+        # p = Paragraph("Filters: ", styles["Normal"])
+        # elements.append(p)
+
+        # for key, val in request.GET.items():
+        #     p = Paragraph(key+": "+val, styles["Normal"])
+        #     elements.append(p)
+
+        # Add some space
+        elements.append(Spacer(1, 12))
+        
+        # TODO: get the header dynamically
+        data = [["Utilisateur", "Téléphone", "Occupation",
+                         "Département", "Cotisation",
+                         "Date de naissance"]]
+
+        data += [ [user, user.phone, user.occupation,
                              user.departement, user.cotisation,
                              user.birthdate] for user in queryset ]
-        t=Table(data)      
+        t = Table(data, style=[('LINEAFTER', (0,0), (-2, -1), 2, colors.grey),
+                               ('LINEBELOW', (0,0), (-1, 0), 2, colors.grey)])
         elements.append(t)
         doc.build(elements)
         response.write(buffer.getvalue())
