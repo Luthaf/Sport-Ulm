@@ -96,6 +96,8 @@ class UserAdmin(admin.ModelAdmin):
       
     def export_as_pdf(self, request, queryset):  
         """Returns PDF as a binary stream."""
+        # TODO: count number of pages
+        # TODO: add user id
         from io import BytesIO
         from reportlab.pdfgen import canvas
         from reportlab.lib.pagesizes import A4
@@ -128,12 +130,15 @@ class UserAdmin(admin.ModelAdmin):
         data = [["Utilisateur", "Téléphone", "Occupation",
                          "Département", "Cotisation",
                          "Date de naissance"]]
-
         data += [ [user, user.phone, user.occupation,
-                             user.departement, user.cotisation,
-                             user.birthdate] for user in queryset ]
+                   user.departement, user.cotisation,
+                   user.birthdate] for user in queryset ]
+        alternating_color = [('BACKGROUND', (0,2*n+1), (-1,2*n+1),
+                              colors.lightgrey)
+                             for n in range(len(data)//2)]
         t = Table(data, style=[('LINEAFTER', (0,0), (-2, -1), 2, colors.grey),
-                               ('LINEBELOW', (0,0), (-1, 0), 2, colors.grey)])
+                               ('LINEBELOW', (0,0), (-1, 0), 2, colors.grey)]
+                  +alternating_color)
         elements.append(t)
         doc.build(elements)
         response.write(buffer.getvalue())
