@@ -179,7 +179,7 @@ class PDFExport(HeaderDataMixin, admin.ModelAdmin):
 
             for instance in queryset[:self.pdf_record_limit]:
                 table_data += [[ val for val in
-                            self.get_instance_data(headers, instance).values()
+                                 self.get_instance_data(headers, instance).values()
                               ]]
 
             alternating_color = [('BACKGROUND', (0,2*n+1), (-1,2*n+1),
@@ -187,7 +187,8 @@ class PDFExport(HeaderDataMixin, admin.ModelAdmin):
                                  for n in range(len(table_data)//2)]
             table = Table(table_data,
                         style=[('LINEAFTER', (0, 0), (-2, -1), 2, colors.grey),
-                               ('LINEBELOW', (0, 0), (-1, 0), 2, colors.grey)
+                               ('LINEBELOW', (0, 0), (-1, 0), 2, colors.grey),
+                               ('FONTSIZE', (0, 0), (-1, -1), 8)
                                ] + alternating_color)
             elements.append(table)
             document.build(elements)
