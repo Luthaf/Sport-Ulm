@@ -9,6 +9,8 @@ from bds.forms import SportifAdminForm, SportAdminForm, SportifInEventAdminForm
 
 from profilENS.models import User
 
+from shared.utils import get_model_fields
+
 
 def boolean(description=""):
     """
@@ -22,15 +24,6 @@ def boolean(description=""):
         wrapper.short_description = description
         return wrapper
     return decorator
-
-def get_model_fields(model):
-    fields = {}
-    options = model._meta
-    for field in sorted(options.concrete_fields + \
-                        options.many_to_many + \
-                        options.virtual_fields):
-        fields[field.name] = field
-    return fields
 
 user_fields = get_model_fields(User)
 
