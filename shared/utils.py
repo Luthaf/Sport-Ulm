@@ -10,14 +10,15 @@ def get_model_fields(model):
         fields[field.name] = field
     return fields
 
-def export_as_csv(request, queryset):
+
+def export_as_csv(modeladmin, request, queryset):
         ''' Export all the columns as CSV'''
-        
+
         import csv
         users = queryset
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename="report.csv"'
-        
+
         writer = csv.writer(response, dialect="excel")
         writer.writerow(["Utilisateur", "Téléphone", "Occupation",
                          "Département", "Cotisation",
@@ -26,16 +27,17 @@ def export_as_csv(request, queryset):
             writer.writerow([user, user.phone, user.occupation,
                              user.departement, user.cotisation,
                              user.birthdate])
-        
-        return response
 
-def export_as_tex(request, queryset):
+        return response
+export_as_csv.short_description = "Exporter la selection au format csv"
+
+def export_as_tex(modeladmin, request, queryset):
     ''' Export all the columns as tex'''
     # TODO: what to do if array too long ?
     users = queryset
     response = HttpResponse(content_type='text/tex')
     response['Content-Disposition'] = 'attachment; filename="report.tex"'
-    
+
     from io import StringIO
     buffer = StringIO()
     buffer.write("\\documentclass{report}\n\n")
@@ -54,13 +56,13 @@ def export_as_tex(request, queryset):
                       for user in users])
                  + "\n")
     buffer.write("\\end{tabular}\n")
-    buffer.write("\\end{document}")        
+    buffer.write("\\end{document}")
     response.write(buffer.getvalue())
 
     return response
+export_as_tex.short_description = "Exporter la selection au format LaTeX"
 
-
-def export_as_pdf(request, queryset):  
+def export_as_pdf(modeladmin, request, queryset):
     """Returns PDF as a binary stream."""
     # TODO: count number of pages
     # TODO: add user id
@@ -74,7 +76,7 @@ def export_as_pdf(request, queryset):
 
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="report.pdf"'
-    
+
     buffer = BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=A4)
     elements = []
@@ -91,7 +93,7 @@ def export_as_pdf(request, queryset):
 
     # Add some space
     elements.append(Spacer(1, 12))
-    
+
     # TODO: get the header dynamically
     data = [["Utilisateur", "Téléphone", "Occupation",
              "Département", "Cotisation",
@@ -110,3 +112,4 @@ def export_as_pdf(request, queryset):
     response.write(buffer.getvalue())
     buffer.close()
     return response
+export_as_pdf.short_description = "Exporter la selection au format PDF"
