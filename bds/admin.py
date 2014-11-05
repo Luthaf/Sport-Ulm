@@ -9,6 +9,8 @@ from bds.forms import SportifAdminForm, SportAdminForm, SportifInEventAdminForm
 
 from profilENS.models import User
 
+from shared.utils import get_model_fields
+from shared.export import ExportMixin
 
 def boolean(description=""):
     """
@@ -23,15 +25,6 @@ def boolean(description=""):
         return wrapper
     return decorator
 
-def get_model_fields(model):
-    fields = {}
-    options = model._meta
-    for field in sorted(options.concrete_fields + \
-                        options.many_to_many + \
-                        options.virtual_fields):
-        fields[field.name] = field
-    return fields
-
 user_fields = get_model_fields(User)
 
 
@@ -40,7 +33,7 @@ class SportsInline(admin.TabularInline):
     extra = 0
 
 
-class SportifAdmin(admin.ModelAdmin):
+class SportifAdmin(ExportMixin, admin.ModelAdmin):
     list_display = ('user', 'have_ffsu', 'is_AS_PSL', 'have_certificate',
                     'phone', 'email', 'departement', 'occupation',
                     'cotisation', 'respo')

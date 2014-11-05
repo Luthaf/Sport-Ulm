@@ -1,0 +1,8 @@
+{% extends "export/base.tex" %}
+{% block content %}
+\begin{tabular}{ |{% for _ in headers %} l | {% endfor %} }
+    {% for head in headers %}{{ head }}{% if forloop.last %} \\{% else %} & {% endif %}{% endfor %}
+    {% for row in data %} {% for value in row %}{{ value }}{% if forloop.last %} \\{% else %} & {% endif %}{% endfor %}
+    {% endfor %} %
+\end{tabular}
+{% endblock %}

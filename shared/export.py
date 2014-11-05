@@ -1,3 +1,4 @@
+<<<<<<< HEAD:shared/export.py
 from django.http import HttpResponse
 
 def export_as_csv(modeladmin, request, queryset):
@@ -103,3 +104,14 @@ def export_as_pdf(modeladmin, request, queryset):
     buffer.close()
     return response
 export_as_pdf.short_description = "Exporter la selection au format PDF"
+=======
+def get_model_fields(model):
+    ''' Returns all the fields of a model'''
+    fields = {}
+    options = model._meta
+    for field in sorted(options.concrete_fields + \
+                        options.many_to_many + \
+                        options.virtual_fields):
+        fields[field.name] = field
+    return fields
+>>>>>>> 836ebfeb5e5f6291c576d18d235124fab8196ece:shared/utils.py
