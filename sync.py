@@ -4,21 +4,15 @@ import sys
 print (os.getcwd())
 
 if __name__ == "__main__":
+
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "sport@ulm.settings")
-    try:
-        from profilENS.models import User
-    except:
-        # return to the root of Sport-Ulm
-        os.chdir("..")
-        from profilENS.models import User
-
-
+    from profilENS.models import User
     
     current = {}
     print ("[ FETCHING ]")
     for user in User.objects.all():
         current[user.username] = user
-    print ("[ SYNCING ]")
+    print ("[ SYNCING ] (this might take a while)")
     for line in sys.stdin:
         bits = line.split(":")
         username = bits[0]
