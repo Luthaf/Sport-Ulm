@@ -12,7 +12,7 @@ from selectable.forms.widgets import AutoCompleteSelectWidget
 from profilENS.lookups import DepartementLookup
 from profilENS.models import Departement, User
 from profilENS.views import AddUserToBuro
-from shared.utils import export_as_pdf, export_as_csv, export_as_tex
+from shared.export import export_as_pdf, export_as_csv, export_as_tex
 
 class UserAdmin(admin.ModelAdmin):
 
