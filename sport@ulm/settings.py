@@ -31,6 +31,7 @@ INSTALLED_APPS += (
 )
 
 INSTALLED_APPS += (
+    'import_export',
     'shared',
     'bds',
     'profilENS',
@@ -73,18 +74,25 @@ SUIT_CONFIG = {
     'MENU_ICONS': {
             'auth': 'icon-lock',
 
-            'bds': 'icon-basketball',
+        'bds': 'icon-basketball',
             'profilENS': "icon-user",
     }
 }
 
 LANGUAGE_CODE = 'fr-FR'
-TIME_ZONE = 'Europe/Paris'
-USE_TZ = True
+#TIME_ZONE = 'Europe/Paris'
+#USE_TZ = True
 
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+}
+DEBUG = True
 try:
     from .local_settings import *
 except ImportError:
