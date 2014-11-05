@@ -91,36 +91,43 @@ class CSVExport(HeaderDataMixin, admin.ModelAdmin):
     csv_export.short_description = 'Exporter la sélection au format CSV'
 
 
-def export_as_tex(modeladmin, request, queryset):
-    ''' Export all the columns as tex'''
-    # TODO: what to do if array too long ?
-    users = queryset
-    response = HttpResponse(content_type='text/tex')
-    response['Content-Disposition'] = 'attachment; filename="report.tex"'
+class LaTeXExport(HeaderDataMixin, admin.ModelAdmin):
+        """
+        Adds a LaTeX export action to an admin view.
+        """
 
-    from io import StringIO
-    buffer = StringIO()
-    buffer.write("\\documentclass{report}\n\n")
-    buffer.write("\\usepackage[utf8]{inputenc}\n\\usepackage[T1]{fontenc}\n")
-    buffer.write("\\begin{document}\n")
-    buffer.write("\\begin{tabular}{l|l|l|l|l|l}\n\t\n")
-    sep = " & "
-    buffer.write("\t"+sep.join(["Utilisateur", "Téléphone", "Occupation",
-                                "Département", "Cotisation",
-                                "Date de naissance"]) + "\\\\\\hline\n")
-    buffer.write("\t"+
-                 "\\\\\n\t".join(
-                     [sep.join([str(user), str(user.phone),
-                                str(user.occupation), str(user.departement),
-                                str(user.cotisation),str(user.birthdate)])
-                      for user in users])
-                 + "\n")
-    buffer.write("\\end{tabular}\n")
-    buffer.write("\\end{document}")
-    response.write(buffer.getvalue())
+        # This is the maximum number of records that will be written.
+        # Exporting massive numbers of records should be done asynchronously.
+        tex_record_limit = 1000
 
-    return response
-export_as_tex.short_description = "Exporter la selection au format LaTeX"
+        def get_actions(self, request):
+            actions = self.actions if hasattr(self, 'actions') else []
+            actions.append('tex_export')
+            actions = super(LaTeXExport, self).get_actions(request)
+            return actions
+
+        def tex_export(self, request, queryset=None, *args, **kwargs):
+            from django.template.loader import render_to_string
+            response = HttpResponse(content_type='text/tex')
+            response['Content-Disposition'] = 'attachment; filename={}.tex'.format(
+                                                        slugify(self.model.__name__)
+                                                        )
+            headers = list(self.list_display)
+
+            context = {}
+            context["headers"] = [ head for head in
+                                        self.get_header_data(headers).values()]
+            context["data"] = []
+
+            for instance in queryset[:self.tex_record_limit]:
+                context["data"].append([ head for head in
+                            self.get_instance_data(headers, instance).values()]
+                            )
+
+            response.write(render_to_string('export/table.tex', context))
+
+            return response
+        tex_export.short_description = 'Exporter la sélection au format LaTeX'
 
 
 class PDFExport(HeaderDataMixin, admin.ModelAdmin):
