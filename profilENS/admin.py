@@ -16,7 +16,7 @@ from shared.utils import export_as_pdf, export_as_csv, export_as_tex
 
 class UserAdmin(admin.ModelAdmin):
 
-    actions = ['add_to_buro', 'export_as_csv', 'export_as_pdf', 'export_as_tex']
+    actions = ['add_to_buro', export_as_csv, export_as_pdf, export_as_tex]
     list_display = ('user', 'phone', 'email', 'departement',
                     'occupation', 'cotisation', 'user_group', 'is_staff')
     list_filter = ('occupation', 'cotisation', 'departement', 'is_staff')
@@ -72,18 +72,6 @@ class UserAdmin(admin.ModelAdmin):
 
     add_to_buro.short_description = "Ajouter l'utilisateur au burô"
 
-    def export_as_csv(self, request, queryset):
-        return export_as_csv(request, queryset)
-    export_as_csv.short_description = "Exporter la selection au format csv"
-    
-    def export_as_tex(self, request, queryset):
-        return export_as_tex(request, queryset)
-    export_as_tex.short_description = "Exporter la selection au format tex"
-
-    def export_as_pdf (self, request, queryset):
-        return export_as_pdf(request, queryset)
-    export_as_pdf.short_description = "Exporter la selection au format pdf"
-
     def get_urls(self):
         urls = super(UserAdmin, self).get_urls()
         my_urls = patterns('',
@@ -97,4 +85,3 @@ class UserAdmin(admin.ModelAdmin):
 
 admin.site.register(Departement)
 admin.site.register(User, UserAdmin)
-
