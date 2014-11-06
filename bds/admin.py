@@ -20,7 +20,7 @@ def boolean(description=""):
     def decorator(func):
         def wrapper(self, *args, **kwargs):
             return func(self, *args, **kwargs)
-        wrapper.boolean=True
+        wrapper.boolean = True
         wrapper.short_description = description
         return wrapper
     return decorator
@@ -59,7 +59,10 @@ class SportifAdmin(ExportMixin, admin.ModelAdmin):
 
     def respo(self, obj):
         '''Show the sports this sportif is respo'''
-        return ", ".join([sport.name for sport in obj.sports.all() if obj in sport.respo.all()])
+        list = ", ".join([sport.name for sport in obj.sports.all() if obj in sport.respo.all()])
+        if len (list) == 0:
+            list = ""
+        return list
     respo.short_description = "Respo"
 
 
