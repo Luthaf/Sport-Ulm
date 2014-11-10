@@ -4,19 +4,19 @@ from django.contrib.auth.models import Group
 from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
 from django.conf.urls import patterns, url
-from django.db import models
 from django.http import HttpResponse
+from django.db import models
 
 from selectable.forms.widgets import AutoCompleteSelectWidget
 
 from profilENS.lookups import DepartementLookup
 from profilENS.models import Departement, User
-from profilENS.views import AddUserToBuro
+from profilENS.views import AddUserToBuro, UpdateFromClipper, UpdateFromClipperStatus
 from shared.export import ExportMixin
 
 class UserAdmin(ExportMixin, admin.ModelAdmin):
 
-    actions = ['add_to_buro']
+    actions = ['add_to_buro', 'sync']
     list_display = ('user', 'phone', 'email', 'departement',
                     'occupation', 'cotisation', 'user_group', 'is_staff')
     list_filter = ('occupation', 'cotisation', 'departement', 'is_staff')
@@ -45,7 +45,7 @@ class UserAdmin(ExportMixin, admin.ModelAdmin):
     }
 
     prepopulated_fields = {'username': ('first_name', 'last_name'), }
-
+    change_list_template = 'admin/change_list_with_import_button.html'
 
     def user_group(self, user):
         '''Show all the groups of the user'''
@@ -58,7 +58,6 @@ class UserAdmin(ExportMixin, admin.ModelAdmin):
 
     def add_to_buro(self, request, queryset):
         kwargs = {}
-        # FIXME: il faut vérifier len(queryset) > 1 non ?
         if len(queryset) != 1:
             import django.contrib.messages as messages
             self.message_user(request,
@@ -72,16 +71,40 @@ class UserAdmin(ExportMixin, admin.ModelAdmin):
 
     add_to_buro.short_description = "Ajouter l'utilisateur au burô"
 
+    def sync(self, request, queryset):
+        import django.contrib.messages as messages
+        try:
+            sync_with_clipper()
+            self.message_user(request,
+                              "Mise à jour effectuée avec succès",
+                              level=messages.SUCCESS)
+        except:
+            self.message_user(request,
+                              "Une erreur est survenue",
+                              level=messages.ERROR)
+        next_url = "admin:profilENS_user_changelist"
+        return redirect(reverse(next_url, kwargs=kwargs))
+            
+    sync.short_description = "Synchroniser la base de donnée avec clipper"
+        
+
     def get_urls(self):
         urls = super(UserAdmin, self).get_urls()
         my_urls = patterns('',
-            url(r'(?P<pk>\d+)/add_to_buro$',
-                AddUserToBuro.as_view(),
-                name="add_user_to_buro"
-            ),
-        )
+                           url(r'(?P<pk>\d+)/add_to_buro$',
+                               AddUserToBuro.as_view(),
+                               name="add_user_to_buro"
+                               ),
+                           url('^update_from_clipper$',
+                               UpdateFromClipper,
+                               name="update_from_clipper"
+                               ),
+                           url('^update_from_clipper_status$',
+                               UpdateFromClipperStatus,
+                               name="update_from_clipper_status"
+                           ),
+                           )
         return my_urls + urls
-
 
 admin.site.register(Departement)
 admin.site.register(User, UserAdmin)

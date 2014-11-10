@@ -4,10 +4,11 @@ from django.core.urlresolvers import reverse_lazy
 from django.views.generic import UpdateView
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import Group
-
+from django.http import HttpResponse
 from profilENS.models import User
 from profilENS.forms import AddUserToBuroForm
 
+from shared.sync import sync_with_clipper
 
 class AddUserToBuro(UpdateView):
     form_class = AddUserToBuroForm
@@ -36,3 +37,33 @@ class AddUserToBuro(UpdateView):
         self.object.set_password(password)
         self.object.save()
         return HttpResponseRedirect(self.get_success_url())
+
+def UpdateFromClipper(request):
+    ''' Call the sync script and return to the previous page.'''
+
+    sync_with_clipper()
+    message = "Yeah!"
+
+    return HttpResponse(message)
+    
+def UpdateFromClipperStatus(request):
+    ''' Ask the database about the status of the update '''
+    import redis
+    r = redis.StrictRedis()
+    status = r.get("status").decode()
+    message_ssh = "Récupération de la liste des utilisateurs depuis clipper…"
+    message_db = "Récupération des données de la base de donnée… "
+    message_sync = "Mise à jour de la base de donnée…"
+    message_end = " terminé"
+    newline = "<br/>"
+    if status == "ssh":
+        message = message_ssh
+    elif status == "db":
+        message = message_ssh + message_end + newline + message_db
+    elif status == "sync":
+        totUser = int(r.get("totUser"))
+        nUser = int(r.get("nUser"))
+        message = message_ssh + message_end + newline + \
+                  message_db + message_end + newline + \
+                  message_sync + "[{}/{}]".format(nUser, totUser)
+    return HttpResponse(message)
