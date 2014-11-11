@@ -16,7 +16,7 @@ from shared.export import ExportMixin
 
 class UserAdmin(ExportMixin, admin.ModelAdmin):
 
-    actions = ['add_to_buro', 'sync']
+    actions = ['add_to_buro']
     list_display = ('user', 'phone', 'email', 'departement',
                     'occupation', 'cotisation', 'user_group', 'is_staff')
     list_filter = ('occupation', 'cotisation', 'departement', 'is_staff')
@@ -69,24 +69,7 @@ class UserAdmin(ExportMixin, admin.ModelAdmin):
             kwargs["pk"] = queryset[0].pk
         return redirect(reverse(next_url, kwargs=kwargs))
 
-    add_to_buro.short_description = "Ajouter l'utilisateur au burô"
-
-    def sync(self, request, queryset):
-        import django.contrib.messages as messages
-        try:
-            sync_with_clipper()
-            self.message_user(request,
-                              "Mise à jour effectuée avec succès",
-                              level=messages.SUCCESS)
-        except:
-            self.message_user(request,
-                              "Une erreur est survenue",
-                              level=messages.ERROR)
-        next_url = "admin:profilENS_user_changelist"
-        return redirect(reverse(next_url, kwargs=kwargs))
-            
-    sync.short_description = "Synchroniser la base de donnée avec clipper"
-        
+    add_to_buro.short_description = "Ajouter l'utilisateur au burô"        
 
     def get_urls(self):
         urls = super(UserAdmin, self).get_urls()
