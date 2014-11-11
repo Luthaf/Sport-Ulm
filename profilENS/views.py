@@ -50,20 +50,26 @@ def UpdateFromClipperStatus(request):
     ''' Ask the database about the status of the update '''
     import redis
     r = redis.StrictRedis()
-    status = r.get("status").decode()
     message_ssh = "Récupération de la liste des utilisateurs depuis clipper…"
     message_db = "Récupération des données de la base de donnée… "
     message_sync = "Mise à jour de la base de donnée…"
     message_end = " terminé"
     newline = "<br/>"
-    if status == "ssh":
-        message = message_ssh
-    elif status == "db":
-        message = message_ssh + message_end + newline + message_db
-    elif status == "sync":
-        totUser = int(r.get("totUser"))
-        nUser = int(r.get("nUser"))
-        message = message_ssh + message_end + newline + \
-                  message_db + message_end + newline + \
-                  message_sync + "[{}/{}]".format(nUser, totUser)
+    
+    try:
+        status = r.get("status").decode()
+        if status == "ssh":
+            message = message_ssh
+        elif status == "db":
+            message = message_ssh + message_end + newline + message_db
+        elif status == "sync":
+            totUser = int(r.get("totUser"))
+            nUser = int(r.get("nUser"))
+            message = message_ssh + message_end + newline + \
+                      message_db + message_end + newline + \
+                      message_sync + "[{}/{}]".format(nUser, totUser)
+    except AttributeError:
+        message= message_ssh + message_end + newline + \
+                 message_db + message_end + newline + \
+                 message_sync + message_end
     return HttpResponse(message)
