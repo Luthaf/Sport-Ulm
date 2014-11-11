@@ -1,0 +1,63 @@
+{% extends "admin/change_list.html" %}
+{% load i18n admin_urls %}
+{% block extrajs %}{{ block.super }}
+<script type="text/javascript">
+
+function status (finish_trigger) {
+    function call_myself() {
+	status(finish_trigger);
+    }
+    
+    $.ajax( "update_from_clipper_status", {
+	success: function(data, status, jqXHR) {
+	    if (finish_trigger.finished == false) {
+		$("#update_status span").text(data);
+	    }
+	},
+	error: function(data, status, jqXHR) {
+	    if (finish_trigger.finished == false) {
+		$("#update_status span").text(
+		    "Impossible de récupérer l'avancement de la mise à jour…");
+	    }
+	},
+	complete: function(data, status, jqXHR) {
+	    if (finish_trigger.finished == false) {
+		setTimeout(call_myself(), 500);
+	    }
+	}
+    });
+}
+function update (finish_trigger) {
+    $.ajax( "update_from_clipper", {
+	beforeSend: function(jqXHR, settings) {
+	   setTimeout(status(finish_trigger), 100); 
+	},
+	success: function(data, status, jqXHR) {
+	    $("#update_status").addClass("btn-success");
+	    $("#update_status i").addClass("icon-green");
+	    $("#update_status span").text(" À jour");
+	},
+	error: function (data, status, jqXHR) {
+	    $("#update_status").addClass("btn-warning");
+	    $("#update_status i").addClass("icon-red");
+	    $("#update_status span").text(" Échec de la mise à jour");
+	},
+	complete: function(data, status, jqXHR) {
+	    finish_trigger.finished = true;
+	}
+    });
+}
+$( "#update_status" ).click(function() {
+    var finish_trigger = {finished: false};
+    update(finish_trigger);
+});
+
+</script>
+{% endblock %}
+{% block object-tools-items %}{{ block.super }}
+<a class="btn btn-warning" id="update_status">
+  <i class="icon-upload icon-white"></i><span>&nbsp;Mettre à
+  jour la liste depuis clipper</span></a>
+
+
+{% endblock %}
