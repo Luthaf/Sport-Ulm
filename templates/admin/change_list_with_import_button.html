@@ -1,0 +1,14 @@
+{% extends "admin/change_list.html" %}
+{% load i18n admin_urls %}
+{% block object-tools-items %}
+<a href="{% url cl.opts|admin_urlname:'add' %}{% if is_popup %}?_popup=1{% endif %}" class="btn btn-success">
+  <i class="icon-plus-sign icon-white"></i>&nbsp;
+  {% blocktrans with cl.opts.verbose_name as name %}Add {{ name }}{% endblocktrans %}
+</a>
+
+<a class="btn btn-warning" href="update_from_clipper">
+  <i class="icon-upload icon-white"></i>&nbsp;Mettre à
+  jour la liste depuis clipper</a>
+
+
+{% endblock %}
