@@ -50,11 +50,9 @@ def UpdateFromClipperStatus(request):
     ''' Ask the database about the status of the update '''
     import redis
     r = redis.StrictRedis()
-    message_ssh = "Récupération de la liste des utilisateurs depuis clipper…"
-    message_db = "Récupération des données de la base de donnée… "
+    message_ssh = " Récupération de la liste des utilisateurs depuis clipper…"
+    message_db = " Récupération des données de la base de donnée… "
     message_sync = "Mise à jour de la base de donnée…"
-    message_end = " terminé"
-    newline = "<br/>"
     
     try:
         status = r.get("status").decode()
