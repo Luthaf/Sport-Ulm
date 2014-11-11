@@ -24,10 +24,11 @@ def add_or_update(r, iterator):
     
     for line in iterator:
         r.incr("nUser")
+        print(line)
         username = line[0]
-        full_name = line[4]
+        full_name = line[4].split(" ")
         first_name = full_name[0]
-        last_name = " ".join(full_name[1:])
+        last_name = " ".join([name for name in full_name[1:]])
         if username in current.keys():
             user = current[username]
             # Update first/last name if necessary
