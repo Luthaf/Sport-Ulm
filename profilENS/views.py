@@ -61,15 +61,12 @@ def UpdateFromClipperStatus(request):
         if status == "ssh":
             message = message_ssh
         elif status == "db":
-            message = message_ssh + message_end + newline + message_db
+            message = message_db
         elif status == "sync":
             totUser = int(r.get("totUser"))
             nUser = int(r.get("nUser"))
-            message = message_ssh + message_end + newline + \
-                      message_db + message_end + newline + \
-                      message_sync + "[{}/{}]".format(nUser, totUser)
+            message = message_sync + "[{}/{}]".format(nUser, totUser)
     except AttributeError:
-        message= message_ssh + message_end + newline + \
-                 message_db + message_end + newline + \
-                 message_sync + message_end
+        message= ""
     return HttpResponse(message)
+ 
