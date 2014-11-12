@@ -60,14 +60,15 @@ def import_from_clipper(redis_db):
     # SSH settings
     login = settings.SSH_SYNC_USER
     server = settings.SSH_SYNC_SERVER
-    print("[ FETCHING FROM '" + server + "' ]")
+    TODO_LOGGING("[ FETCHING FROM '" + server + "' ]")
 
     redis_db.set("status", "ssh")
     cmd = Popen(["ssh", login + "@" + server, "ypcat", "passwd"], stdout=PIPE)
     data, err = cmd.communicate()
 
     if err is not None:
-        raise Exception("Impossible to get passwd list")
+        TODO_LOGGING("Impossible to get passwd list")
+        raise Exception()
     else:
         # generator that iterates over the lines of the passwd
         splitted = data.splitlines()
@@ -83,7 +84,8 @@ def sync_with_clipper():
 
         # Try to open the connection, else fail
         if redis_db.get("lock")==b'True':
-            raise Exception("Oh ow, db lock!")
+            TODO_LOGGING("Database lock still in place")
+            raise Exception()
         else:
             redis_db.set("lock", True)
             redis_db.delete("status")
