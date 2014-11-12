@@ -38,3 +38,9 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 MEDIA_URL = '/media/'
 STATIC_ROOT = os.path.join(BASE_DIR, "media")
+
+# User for ssh login on clipper
+SSH_SYNC_USER = ""
+# Server for ssh login
+# Login should be performed with an ssh key (no password)
+SSH_SYNC_SERVER = ""
