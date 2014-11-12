@@ -30,7 +30,7 @@ function status (finish_trigger) {
 function update (finish_trigger) {
     $.ajax( "update_from_clipper", {
 	beforeSend: function(jqXHR, settings) {
-	   setTimeout(status(finish_trigger), 100); 
+	   setTimeout(status(finish_trigger), 500); 
 	},
 	success: function(data, status, jqXHR) {
 	    $("#update_status").addClass("btn-success");
