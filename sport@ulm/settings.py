@@ -31,7 +31,6 @@ INSTALLED_APPS += (
 )
 
 INSTALLED_APPS += (
-    'import_export',
     'shared',
     'bds',
     'profilENS',
