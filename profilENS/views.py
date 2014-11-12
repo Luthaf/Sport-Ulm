@@ -52,14 +52,14 @@ def update_from_clipper_status(request):
     message_sync = "Mise à jour de la base de donnée…"
 
     try:
-        status = r.get("status").decode()
+        status = r.get("clipper:status").decode()
         if status == "ssh":
             message = message_ssh
         elif status == "db":
             message = message_db
         elif status == "sync":
-            n_tot_user = int(r.get("n_total_user"))
-            n_user = int(r.get("n_user"))
+            n_tot_user = int(r.get("clipper:n_total_user"))
+            n_user = int(r.get("clipper:n_user"))
             message = message_sync + "[{}/{}]".format(n_user, n_tot_user)
     except AttributeError:
         message= ""
