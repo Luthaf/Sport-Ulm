@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 import os
 from subprocess import Popen, PIPE
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "sport@ulm.settings")
+from django.conf import settings
 from profilENS.models import User
 import redis
-    
+   
 def add_or_update(r, iterator):
     ''' Add to the database if non existent, else update if necessary.'''
     
@@ -51,8 +51,8 @@ def add_or_update(r, iterator):
 def import_from_clipper(r):
     '''Get the data from the server'''
     # SSH settings
-    login = "ccadiou"
-    serv = "sas.eleves.ens.fr"
+    login = settings.SSH_SYNC_USER
+    serv = settings.SSH_SYNC_SERVER
     print("[ FETCHING FROM '"+serv+"' ]")
     
     r.set("status", "ssh")
