@@ -40,11 +40,8 @@ class AddUserToBuro(UpdateView):
 
 def update_from_clipper(request):
     ''' Call the sync script and return to the previous page.'''
-
     sync_with_clipper()
-    message = "Yeah!"
-
-    return HttpResponse(message)
+    return HttpResponse("")
 
 def update_from_clipper_status(request):
     ''' Ask the database about the status of the update '''
