@@ -5,10 +5,10 @@ from django.views.generic import UpdateView
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import Group
 from django.http import HttpResponse
+
 from profilENS.models import User
 from profilENS.forms import AddUserToBuroForm
-
-from shared.sync import sync_with_clipper
+from profilENS.sync import sync_with_clipper
 
 class AddUserToBuro(UpdateView):
     form_class = AddUserToBuroForm
@@ -38,22 +38,22 @@ class AddUserToBuro(UpdateView):
         self.object.save()
         return HttpResponseRedirect(self.get_success_url())
 
-def UpdateFromClipper(request):
+def update_from_clipper(request):
     ''' Call the sync script and return to the previous page.'''
 
     sync_with_clipper()
     message = "Yeah!"
 
     return HttpResponse(message)
-    
-def UpdateFromClipperStatus(request):
+
+def update_from_clipper_status(request):
     ''' Ask the database about the status of the update '''
     import redis
     r = redis.StrictRedis()
     message_ssh = " Récupération de la liste des utilisateurs depuis clipper…"
     message_db = " Récupération des données de la base de donnée… "
     message_sync = "Mise à jour de la base de donnée…"
-    
+
     try:
         status = r.get("status").decode()
         if status == "ssh":
@@ -61,10 +61,10 @@ def UpdateFromClipperStatus(request):
         elif status == "db":
             message = message_db
         elif status == "sync":
-            totUser = int(r.get("totUser"))
-            nUser = int(r.get("nUser"))
-            message = message_sync + "[{}/{}]".format(nUser, totUser)
+            n_tot_user = int(r.get("n_total_user"))
+            n_user = int(r.get("n_user"))
+            message = message_sync + "[{}/{}]".format(n_user, n_tot_user)
     except AttributeError:
         message= ""
     return HttpResponse(message)
- 
+

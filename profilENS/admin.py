@@ -11,7 +11,7 @@ from selectable.forms.widgets import AutoCompleteSelectWidget
 
 from profilENS.lookups import DepartementLookup
 from profilENS.models import Departement, User
-from profilENS.views import AddUserToBuro, UpdateFromClipper, UpdateFromClipperStatus
+from profilENS.views import AddUserToBuro, update_from_clipper, update_from_clipper_status
 from shared.export import ExportMixin
 
 class UserAdmin(ExportMixin, admin.ModelAdmin):
@@ -69,7 +69,7 @@ class UserAdmin(ExportMixin, admin.ModelAdmin):
             kwargs["pk"] = queryset[0].pk
         return redirect(reverse(next_url, kwargs=kwargs))
 
-    add_to_buro.short_description = "Ajouter l'utilisateur au burô"        
+    add_to_buro.short_description = "Ajouter l'utilisateur au burô"
 
     def get_urls(self):
         urls = super(UserAdmin, self).get_urls()
@@ -79,11 +79,11 @@ class UserAdmin(ExportMixin, admin.ModelAdmin):
                                name="add_user_to_buro"
                                ),
                            url('^update_from_clipper$',
-                               UpdateFromClipper,
+                               update_from_clipper,
                                name="update_from_clipper"
                                ),
                            url('^update_from_clipper_status$',
-                               UpdateFromClipperStatus,
+                               update_from_clipper_status,
                                name="update_from_clipper_status"
                            ),
                            )
