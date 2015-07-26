@@ -72,6 +72,11 @@ class Sportif(models.Model):
                              choices=COTIZ_DURATION_CHOICES,
                              max_length=3)
 
+    registration_date = models.DateField(auto_now_add=True,
+                                         auto_now=True,
+                                         verbose_name="Date d'inscription")
+
+
     class Meta:
         verbose_name = "Sportif"
 

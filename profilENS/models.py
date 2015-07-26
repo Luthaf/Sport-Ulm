@@ -57,7 +57,7 @@ class User(AbstractUser):
                                  verbose_name="Date de naissance",
                                  blank=True,
                                  null=True)
-    gender = models.CharField("Sexe",
+    gender = models.CharField("Genre",
                               choices=GENDER_CHOICES,
                               max_length=3)
 

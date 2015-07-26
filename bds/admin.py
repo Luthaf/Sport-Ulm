@@ -36,11 +36,12 @@ class SportsInline(admin.TabularInline):
 class SportifAdmin(ExportMixin, admin.ModelAdmin):
     list_display = ('user', 'gender', 'have_ffsu', 'is_AS_PSL', 'have_certificate',
                     'phone', 'email', 'departement', 'occupation',
-                    'cotisation', 'respo',)
+                    'cotisation', 'respo', 'registration_date')
     list_filter = ('have_certificate',
                    boolean_filter_factory('have_ffsu'),
                    boolean_filter_factory("is_AS_PSL"),
                    'user__gender',
+                   'registration_date'
                    )
 
     ordering = ['user__last_name', 'user__first_name']
