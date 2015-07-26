@@ -60,7 +60,7 @@ class SportifAdmin(ExportMixin, admin.ModelAdmin):
             if shortGender == obj.user.gender:
                 return gender
         return 'Inconnu'
-    gender.short_description = 'Sexe'
+    gender.short_description = 'Genre'
 
     @boolean(description="AS PSL")
     def is_AS_PSL(self, obj):
