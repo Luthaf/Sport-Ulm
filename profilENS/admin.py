@@ -17,9 +17,9 @@ from shared.export import ExportMixin
 class UserAdmin(ExportMixin, admin.ModelAdmin):
 
     actions = ['add_to_buro']
-    list_display = ('user', 'phone', 'email', 'departement',
+    list_display = ('user', 'gender', 'phone', 'email', 'departement',
                     'occupation', 'cotisation', 'user_group', 'is_staff')
-    list_filter = ('occupation', 'cotisation', 'departement', 'is_staff')
+    list_filter = ('occupation', 'gender', 'cotisation', 'departement', 'is_staff')
 
     search_fields = ['^first_name', '^last_name']
     ordering = ['last_name', 'first_name']
@@ -28,6 +28,7 @@ class UserAdmin(ExportMixin, admin.ModelAdmin):
             (None, {
                  'fields': ('first_name',
                             'last_name',
+                            'gender',
                             'username',
                             'email',
                             'phone',
@@ -91,4 +92,3 @@ class UserAdmin(ExportMixin, admin.ModelAdmin):
 
 admin.site.register(Departement)
 admin.site.register(User, UserAdmin)
-

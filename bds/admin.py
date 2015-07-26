@@ -7,7 +7,7 @@ from bds.models import Sportif, Sport, UsersInSport, Event, UsersInEvent, \
 from bds.filters import boolean_filter_factory
 from bds.forms import SportifAdminForm, SportAdminForm, SportifInEventAdminForm
 
-from profilENS.models import User
+from profilENS.models import User, GENDER_CHOICES
 
 from shared.utils import get_model_fields
 from shared.export import ExportMixin
@@ -34,12 +34,13 @@ class SportsInline(admin.TabularInline):
 
 
 class SportifAdmin(ExportMixin, admin.ModelAdmin):
-    list_display = ('user', 'have_ffsu', 'is_AS_PSL', 'have_certificate',
+    list_display = ('user', 'gender', 'have_ffsu', 'is_AS_PSL', 'have_certificate',
                     'phone', 'email', 'departement', 'occupation',
-                    'cotisation', 'respo')
+                    'cotisation', 'respo',)
     list_filter = ('have_certificate',
                    boolean_filter_factory('have_ffsu'),
                    boolean_filter_factory("is_AS_PSL"),
+                   'user__gender',
                    )
 
     ordering = ['user__last_name', 'user__first_name']
@@ -52,6 +53,13 @@ class SportifAdmin(ExportMixin, admin.ModelAdmin):
     @boolean(description="n° FFSU")
     def have_ffsu(self, obj):
         return obj.FFSU_number != None and obj.FFSU_number != ""
+
+    def gender(self, obj):
+        for (shortGender, gender) in GENDER_CHOICES:
+            if shortGender == obj.user.gender:
+                return gender
+        return 'Inconnu'
+    gender.short_description = 'Sexe'
 
     @boolean(description="AS PSL")
     def is_AS_PSL(self, obj):

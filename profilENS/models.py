@@ -22,6 +22,12 @@ TYPE_COTIZ_CHOICES = (
     ('ARC', "Archicube"),
 )
 
+GENDER_CHOICES = (
+    ('MAL', "Homme"),
+    ('FEM', "Femme"),
+    ('OTH', "Autre")
+)
+
 
 class Departement(models.Model):
     name = models.CharField("Département",
@@ -51,6 +57,9 @@ class User(AbstractUser):
                                  verbose_name="Date de naissance",
                                  blank=True,
                                  null=True)
+    gender = models.CharField("Sexe",
+                              choices=GENDER_CHOICES,
+                              max_length=3)
 
     def __str__(self):
         if self.first_name and self.last_name:

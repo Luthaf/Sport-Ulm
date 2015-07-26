@@ -18,7 +18,7 @@ class Sport(models.Model):
                                 max_digits=5,
                                 blank=True,
                                 null=True)
-    respo = models.ManyToManyField("Sportif", blank=True, null=True)
+    respo = models.ManyToManyField("Sportif", blank=True)
     cotisation_frequency = models.CharField("Fréquence de la cotisation",
                                             default="ANN",
                                             choices=COTIZ_FREQUENCY_CHOICES,
@@ -155,8 +155,7 @@ class UsersInEvent(models.Model):
     event = models.ForeignKey(Event, verbose_name="Évènement")
     options = models.ManyToManyField(EventOption,
                                      verbose_name="Options",
-                                     blank=True,
-                                     null=True)
+                                     blank=True)
     payed = models.BooleanField("Payé", default=False)
 
     class Meta:
