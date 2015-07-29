@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Django settings for sport@ulm project.
+Django settings for sportAtUlm project.
 
 For more information on this file, see
 https://docs.djangoproject.com/en/1.6/topics/settings/
@@ -58,17 +58,17 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'sport@ulm.urls'
+ROOT_URLCONF = 'sportAtUlm.urls'
 APPEND_SLASH = False
 
-WSGI_APPLICATION = 'sport@ulm.wsgi.application'
+WSGI_APPLICATION = 'sportAtUlm.wsgi.application'
 
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR, 'templates'),
 )
 
 SUIT_CONFIG = {
-    'ADMIN_NAME': 'Sport@Ulm',
+    'ADMIN_NAME': 'SportAtUlm',
     'SEARCH_URL': '',
     'MENU_ICONS': {
             'auth': 'icon-lock',
