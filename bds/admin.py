@@ -124,8 +124,8 @@ class EventAdmin(admin.ModelAdmin):
         return obj.users.all().count()
 
 
-class UsersInEventAdmin(admin.ModelAdmin):
-    list_display = ('user', 'event', 'payed')
+class UsersInEventAdmin(ExportMixin, admin.ModelAdmin):
+    list_display = ('user', 'event', 'options_selected', 'payed')
     list_filter = ('event__name', 'payed')
     search_fields = ["^event__name",
                      "^user__user__first_name",
@@ -133,6 +133,18 @@ class UsersInEventAdmin(admin.ModelAdmin):
     ordering = ["event__name", "user__user__last_name", "user__user__first_name"]
 
     form = SportifInEventAdminForm
+
+    def options_selected(self, obj):
+        options = obj.options.all()
+        options_string = []
+        total = 0
+        for option in options:
+            options_string.append(option.description + ' (' + str(option.price) + '€)')
+            total += option.price
+
+        options_string.append('Total: ' + str(total) + '€')
+        return ','.join(options_string)
+    options_selected.short_description = 'Options sélectionnées'
 
 
 admin.site.register(Sportif, SportifAdmin)
