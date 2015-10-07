@@ -156,7 +156,7 @@ class UsersInEventAdmin(ExportMixin, admin.ModelAdmin):
             total += option.price
 
         options_string.append('Total: ' + str(total) + '€')
-        return ','.join(options_string)
+        return ', '.join(options_string)
     options_selected.short_description = 'Options sélectionnées'
 
 
