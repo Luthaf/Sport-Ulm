@@ -46,7 +46,7 @@ class SportTimeSlot(WeeklyTimeSlot):
 
 class Sportif(models.Model):
     def issue_file_name(sportif, filename):
-        fn, extension = os.path.splittext(filename)
+        fn, extension = os.path.splitext(filename)
         year = str(datetime.datetime.now().year)
         return "certifs/" + sportif.__str__() + '-' + year + extension
 
