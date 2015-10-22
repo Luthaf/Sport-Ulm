@@ -125,7 +125,7 @@ class EventAdmin(admin.ModelAdmin):
 
 
 class UsersInEventAdmin(ExportMixin, admin.ModelAdmin):
-    list_display = ('user', 'event', 'options_selected', 'payed')
+    list_display = ('user', 'event', 'options_selected', 'payed', 'user_phone', 'user_email', 'user_have_certificate')
     list_filter = ('event__name', 'payed')
     search_fields = ["^event__name",
                      "^user__user__first_name",
@@ -133,6 +133,19 @@ class UsersInEventAdmin(ExportMixin, admin.ModelAdmin):
     ordering = ["event__name", "user__user__last_name", "user__user__first_name"]
 
     form = SportifInEventAdminForm
+
+    @boolean(description="Certificat")
+    def user_have_certificate(self, obj):
+        return obj.user.have_certificate
+    user_have_certificate.short_description = 'Certificat'
+
+    def user_email(self, obj):
+        return obj.user.email
+    user_email.short_description = 'Email'
+
+    def user_phone(self, obj):
+        return obj.user.phone
+    user_phone.short_description = 'Téléphone'
 
     def options_selected(self, obj):
         options = obj.options.all()
@@ -143,7 +156,7 @@ class UsersInEventAdmin(ExportMixin, admin.ModelAdmin):
             total += option.price
 
         options_string.append('Total: ' + str(total) + '€')
-        return ','.join(options_string)
+        return ', '.join(options_string)
     options_selected.short_description = 'Options sélectionnées'
 
 
