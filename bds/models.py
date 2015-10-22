@@ -4,6 +4,8 @@ from django.db import models
 from profilENS.models import User
 from shared.models import TimeSlot, WeeklyTimeSlot
 
+import os, datetime
+
 COTIZ_FREQUENCY_CHOICES = (
     ("SEM", "semestre"),
     ("ANN", "année"),
@@ -43,6 +45,10 @@ class SportTimeSlot(WeeklyTimeSlot):
 
 
 class Sportif(models.Model):
+    def issue_file_name(sportif, filename):
+        fn, extension = os.path.splittext(filename)
+        year = str(datetime.datetime.now().year)
+        return "certifs/" + sportif.__str__() + '-' + year + extension
 
     COTIZ_DURATION_CHOICES = (
         ('ANN', 'Année'),
@@ -58,7 +64,7 @@ class Sportif(models.Model):
     have_certificate = models.BooleanField("Certificat médical",
                                             default=False)
     certificate_file = models.FileField("Fichier de certificat médical",
-                                        upload_to='certifs',
+                                        upload_to=issue_file_name,
                                         blank=True)
     sports = models.ManyToManyField(Sport,
                                     blank=True,
